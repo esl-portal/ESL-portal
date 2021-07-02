@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Answer(models.Model):
     answer_text = models.CharField(max_length=30)
-    question_id = models.ForeignKey("Question", on_delete=models.CASCADE)
+    question_id = models.ForeignKey("Question", on_delete=models.CASCADE, blank=True)
 
 
 class Question(models.Model):
