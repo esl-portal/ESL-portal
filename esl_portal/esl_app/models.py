@@ -5,12 +5,18 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Answer(models.Model):
     answer_text = models.CharField(max_length=30)
-    question_id = models.ForeignKey("Question", on_delete=models.CASCADE, blank=True)
+    question = models.ForeignKey("Question", on_delete=models.CASCADE, blank=True)
+
+    def __str__(self):
+        return self.answer_text
 
 
 class Question(models.Model):
     question_text = models.CharField(max_length=500)
-    correct_answer_id = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    correct_answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.question_text
 
 
 class Test(models.Model):
@@ -33,28 +39,42 @@ class Test(models.Model):
     aspect = models.CharField(max_length=2, choices=ASPECTS)
     time_limit = models.PositiveSmallIntegerField()
 
+    def __str__(self):
+        return self.test_name
+
 
 class TestQuestion(models.Model):
     TYPES = (
         ("Single", "Single choice question"),
         ("Insert", "Question with insertion")
     )
-    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
-    test_id = models.ForeignKey(Test, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
     type = models.CharField(max_length=6, choices=TYPES)
+
+    def __str__(self):
+        return self.question.__str__() + "from the test \"" + self.test.__str__() + "\""
 
 
 class UserAnswer(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    test_question_id = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    test_question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
     answer_text = models.CharField(max_length=30)
     is_correct = models.BooleanField()
 
+    def __str__(self):
+        return self.user.username.__str__() + "answered to " + self.test_question.__str__()
+
 
 class Completion(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    test_id = models.ForeignKey(Test, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
     is_completed = models.BooleanField()
     taken_time = models.PositiveIntegerField()
     num_of_correct = models.PositiveSmallIntegerField()
     is_started = models.BooleanField()
+
+    def __str__(self):
+        return self.user.username.__str__() + "'s completion of " + self.test.__str__()
+
+
