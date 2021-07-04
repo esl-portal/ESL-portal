@@ -6,14 +6,21 @@ from django.contrib.auth.models import User
 class Answer(models.Model):
     answer_text = models.CharField(max_length=30)
     related_question = models.ForeignKey("Question", on_delete=models.CASCADE, blank=True, null=True)
+    is_correct = models.BooleanField(default=False)
+    user_answers = models.ManyToManyField(User, through="UserAnswer")
 
     def __str__(self):
         return self.answer_text
 
 
 class Question(models.Model):
+    TYPES = (
+        ("Single", "Single choice question"),
+        ("Insert", "Question with insertion"),
+        ("Multiple", "Multiple choice question")
+    )
     question_text = models.CharField(max_length=500)
-    correct_answer = models.ForeignKey(Answer, on_delete=models.CASCADE, blank=True, null=True)
+    type = models.CharField(max_length=8, choices=TYPES, default="Single")
 
     def __str__(self):
         return self.question_text
@@ -38,32 +45,17 @@ class Test(models.Model):
     level = models.CharField(max_length=2, choices=LEVELS)
     aspect = models.CharField(max_length=2, choices=ASPECTS)
     time_limit = models.PositiveSmallIntegerField()
+    questions = models.ManyToManyField(Question)
 
     def __str__(self):
         return self.test_name
 
 
-class TestQuestion(models.Model):
-    TYPES = (
-        ("Single", "Single choice question"),
-        ("Insert", "Question with insertion")
-    )
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    type = models.CharField(max_length=6, choices=TYPES)
-
-    def __str__(self):
-        return self.question.__str__() + "from the test \"" + self.test.__str__() + "\""
-
-
 class UserAnswer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    test_question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True)
     answer_text = models.CharField(max_length=30)
     is_correct = models.BooleanField()
-
-    def __str__(self):
-        return self.user.username.__str__() + "answered to " + self.test_question.__str__()
 
 
 class Completion(models.Model):
