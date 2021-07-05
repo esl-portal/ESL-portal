@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Migrations
+esl_portal/esl_app/migrations/0*.py
+
+#PyCharm config
+.idea
