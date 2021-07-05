@@ -5,7 +5,8 @@ from django.urls import reverse
 
 
 def main(request):
-    pass
+    context = {'is_authenticated': request.user.is_authenticated}
+    return render(request, 'esl_app/main.html', context)
 
 
 def login(request):
