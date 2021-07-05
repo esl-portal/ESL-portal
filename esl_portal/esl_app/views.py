@@ -1,34 +1,45 @@
 from django.shortcuts import render, get_object_or_404
 from .models import *
 from django.urls import reverse
+from datetime import datetime
 # Create your views here.
 
 def main(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/main.html', {'time': now})
 
 def login(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/login.html', {'time': now})
 
 def login_forgot(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/forgot.html', {'time': now})
 
 def register(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/register.html', {'time': now})
 
 def profile(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/profile.html', {'time': now})
 
 def profile_completed(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/completed.html', {'time': now})
 
 def profile_options(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/options.html', {'time': now})
 
 def test_list(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/tests.html', {'time': now})
 
 def test(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/test.html', {'time': now})
 
 def test_result(request):
-    pass
+    now = datetime.now()
+    return render(request, 'esl_app/result.html', {'time': now})
