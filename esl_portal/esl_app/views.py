@@ -23,6 +23,7 @@ def register(request):
 def profile(request):
     pass
 
+
 def profile_completed(request):
     pass
 
@@ -40,4 +41,8 @@ def test(request):
 
 
 def test_result(request):
+    pass
+
+
+def result(request):
     pass
