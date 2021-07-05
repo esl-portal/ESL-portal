@@ -1,1 +1,9 @@
-{{time}}
+{% if list %}
+    <ul>
+        {% for test in list %}
+            <li><a href="/test/{{test.id}}/">{{test.test_name}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Нет тестов</p>
+{% endif %}

@@ -10,6 +10,6 @@ urlpatterns = [
     path('profile/completed/', views.profile_completed, name='profile_completed'),
     path('profile/options/', views.profile_options, name='profile_options'),
     path('tests/', views.test_list, name='test_list'),
-    path('tests/<int:test_id>/', views.test, name='test'),
-    path('tests/<int:test_id>/result/', views.test_result, name='test_result'),
+    path('test/<int:test_id>/', views.test, name='test'),
+    path('test/<int:test_id>/result/', views.test_result, name='test_result'),
 ]
