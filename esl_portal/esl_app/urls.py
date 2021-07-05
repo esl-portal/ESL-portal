@@ -11,4 +11,5 @@ urlpatterns = [
     path('profile/options/', views.profile_options, name='profile_options'),
     path('tests/', views.test_list, name='test_list'),
     path('tests/<int:test_id>', views.test, name='test'),
+    path('tests/<int:test_id>', views.test_result, name='test_result'),
 ]
