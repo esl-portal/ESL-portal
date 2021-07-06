@@ -5,6 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-
+    {% if wrong_credentials %}
+            <p>Неправильное имя пользователя и/или пароль</p>
+    {% endif %}
+    <form method="post" action={% url 'login' %}>
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
