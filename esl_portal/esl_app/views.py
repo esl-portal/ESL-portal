@@ -1,27 +1,27 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from .models import *
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from datetime import datetime
 # Create your views here.
 
 def main(request):
-    return render(request, 'esl_app/main.html', {})
+    return render(request, 'esl_app/main.html', {'auth': request.user.is_authenticated})
 
-def login(request):
-    now = datetime.now()
+def log_in(request):
+    now = 124131
     return render(request, 'esl_app/login.html', {'time': now})
 
 def login_forgot(request):
-    now = datetime.now()
+    now = 14141414
     return render(request, 'esl_app/forgot.html', {'time': now})
 
 def register(request):
-    now = datetime.now()
+    now = 123
     return render(request, 'esl_app/register.html', {'time': now})
 
+@login_required(login_url='/login/')
 def profile(request):
-    now = datetime.now()
-    return render(request, 'esl_app/profile.html', {'time': now})
+    return render(request, 'esl_app/profile.html', {'user': request.user})
 
 def profile_completed(request):
     now = datetime.now()

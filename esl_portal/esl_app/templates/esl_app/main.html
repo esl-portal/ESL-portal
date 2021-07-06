@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Главная</title>
 </head>
 <body>
-    <h1>О нас</h1>
-    <p>Описание нашего прокта</p>
+    {% if auth %}
+        <h2>Юзер авторизован!</h2>
+        <h3><a href="{% url 'test_list' %}">Каталог тестов</a></h3>
+        <h3><a href="{% url 'profile' %}">Профиль</a></h3>
+    {% else %}
+        <h2>Юзер не авторизован!</h2>
+    {% endif %}
 </body>
 </html>
