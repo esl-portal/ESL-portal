@@ -1,15 +1,34 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from .models import *
+from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.contrib.auth import authenticate, login
 # Create your views here.
 
 def main(request):
     return render(request, 'esl_app/main.html', {'auth': request.user.is_authenticated})
 
 def log_in(request):
-    now = 124131
-    return render(request, 'esl_app/login.html', {'time': now})
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request=request, user=user)
+            return redirect('/main/')
+        else:
+            form = UserLoginForm()
+            return render(request, 'esl_app/login.html', {'wrong_credentials': True,
+                                                          'form': form})
+    else:
+        if request.user.is_authenticated:
+            return redirect('/main/')
+        else:
+            form = UserLoginForm()
+            return render(request, 'esl_app/login.html', {'wrong_credentials': False,
+                                                          'form': form})
+
 
 def login_forgot(request):
     now = 14141414
