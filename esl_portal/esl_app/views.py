@@ -35,8 +35,19 @@ def login_forgot(request):
     return render(request, 'esl_app/forgot.html', {'time': now})
 
 def register(request):
-    now = 123
-    return render(request, 'esl_app/register.html', {'time': now})
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid() and user_form.clean_password2():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            return redirect('/login/')
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'esl_app/register.html', {'user_form': user_form})
+
+
+
 
 @login_required(login_url='/login/')
 def profile(request):

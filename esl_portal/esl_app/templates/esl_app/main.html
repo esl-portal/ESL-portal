@@ -11,6 +11,8 @@
         <h3><a href="{% url 'profile' %}">Профиль</a></h3>
     {% else %}
         <h2>Юзер не авторизован!</h2>
+        <h3><a href="{% url 'login' %}">Войти</a></h3>
+        <h3><a href="{% url 'register' %}">Регистрация</a></h3>
     {% endif %}
 </body>
 </html>
