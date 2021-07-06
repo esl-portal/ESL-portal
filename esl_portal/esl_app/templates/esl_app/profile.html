@@ -5,6 +5,22 @@
     <title>Title</title>
 </head>
 <body>
-
+    {% if user %}
+        <div>
+            <div>
+                <h2>Юзернейм</h2>
+                <input type="text" value="{{user.username}}">
+            </div>
+            <div>
+                <h2>Почта</h2>
+                <input type="text" value="{{user.email}}">
+            </div>
+            <div>
+                <h2>Пароль</h2>
+                <input type="password">
+            </div>
+            <button>Изменить</button>
+        </div>
+    {% endif %}
 </body>
 </html>

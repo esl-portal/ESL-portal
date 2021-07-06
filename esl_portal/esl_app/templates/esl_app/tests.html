@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% if list %}
+    <ul>
+        {% for test in list %}
+            <li><a href="/test/{{test.id}}/">{{test.test_name}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Нет тестов</p>
+{% endif %}
