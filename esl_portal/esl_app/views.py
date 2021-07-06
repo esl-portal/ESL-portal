@@ -3,7 +3,7 @@ from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
 def main(request):
@@ -33,6 +33,10 @@ def log_in(request):
 def login_forgot(request):
     now = 14141414
     return render(request, 'esl_app/forgot.html', {'time': now})
+
+def log_out(request):
+    logout(request)
+    return redirect('/login')
 
 def register(request):
     if request.method == 'POST':
