@@ -13,4 +13,5 @@ urlpatterns = [
     path('tests/', views.test_list, name='tests'),
     path('tests/<int:test_id>', views.test, name='test'),
     path('tests/<int:test_id>/result', views.test_result, name='result'),
+    path('logout', views.log_out, name='logout')
 ]

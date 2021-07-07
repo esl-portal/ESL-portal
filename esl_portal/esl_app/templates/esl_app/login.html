@@ -10,9 +10,10 @@
     {% endif %}
     <form method="post" action={% url 'login' %}>
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_table }}
         <input type="submit" value="Submit">
     </form>
     <p>Ещё нет аккаунта? <a href={% url 'register' %}>Зарегистрируйтесь</a></p>
+    <p><a href={% url 'forgot' %}>Забыли пароль?</a></p>
 </body>
 </html>

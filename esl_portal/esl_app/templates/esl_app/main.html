@@ -5,12 +5,19 @@
     <title>Главная</title>
 </head>
 <body>
-    {% if auth %}
-        <h2>Юзер авторизован!</h2>
-        <h3><a href="{% url 'test_list' %}">Каталог тестов</a></h3>
-        <h3><a href="{% url 'profile' %}">Профиль</a></h3>
+{#    {% if is_authenticated %}#}
+{#        <h2>Юзер авторизован!</h2>#}
+{#        <h3><a href="{% url 'test_list' %}">Каталог тестов</a></h3>#}
+{#        <h3><a href="{% url 'profile' %}">Профиль</a></h3>#}
+{#    {% else %}#}
+{#        <h2>Юзер не авторизован!</h2>#}
+{#    {% endif %}#}
+    {% if is_authenticated %}
+        <a href="{% url 'logout' %}">Выйти</a>
     {% else %}
-        <h2>Юзер не авторизован!</h2>
+        <a href="{% url 'login' %}">Войти</a>
+        <a href="{% url 'register' %}">Зарегистрироваться</a>
     {% endif %}
+
 </body>
 </html>
