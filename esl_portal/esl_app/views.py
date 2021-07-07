@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from .models import *
+from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -57,12 +58,23 @@ def login_forgot(request):
             return render(request, 'esl_app/forgot.html', {'wrong_credentials': False, 'form': form})
 
 
+def log_out(request):
+    logout(request)
+    return redirect('/main/')
+
 def register(request):
-    pass
-
-
-def profile(request):
-    pass
+    if request.user.is_authenticated:
+        return redirect('/main/')
+    if request.method == 'POST':
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid() and user_form.clean_password2():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            return redirect('/login/')
+    else:
+        user_form = UserRegistrationForm()
+    return render(request, 'esl_app/register.html', {'user_form': user_form})
 
 
 @login_required(login_url='/login/')
@@ -78,19 +90,17 @@ def profile_options(request):
 
 
 def test_list(request):
-    pass
+    list_of_tests = get_list_or_404(Test.objects.all())
+    return render(request, 'esl_app/tests.html', {'list': list_of_tests})
 
-
-def test(request):
-    pass
+def test(request, test_id):
+    some_test = get_object_or_404(Test, pk=test_id)
+    questions = some_test.questions.all()
+    return render(request, 'esl_app/some_test.html', {'some_test': some_test,
+                                                      'questions': questions})
 
 
 @login_required(login_url='/login/')
 def test_result(request, test_id):
     completion = Completion.objects.filter(user=request.user, test_id=test_id)
     return render(request, 'esl_app/completed.html', {'completion': completion})
-
-
-def log_out(request):
-    logout(request)
-    return redirect(to='/main/')

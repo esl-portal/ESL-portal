@@ -6,21 +6,16 @@
 </head>
 <body>
     {% if user %}
-        <div>
-            <div>
-                <h2>Юзернейм</h2>
-                <input type="text" value="{{user.username}}">
-            </div>
-            <div>
-                <h2>Почта</h2>
-                <input type="text" value="{{user.email}}">
-            </div>
-            <div>
-                <h2>Пароль</h2>
-                <input type="password">
-            </div>
-            <button>Изменить</button>
-        </div>
+        <h2>Юзернейм</h2>
+        <input type="text" value="{{user.username}}">
+        <h2>Почта</h2>
+        <input type="text" value="{{user.email}}">
+        <h2>Пароль</h2>
+        <input type="password">
+        <button>Изменить</button>
+        <a href="{% url 'logout' %}">
+            <input type="submit" value="Выйти">
+        </a>
     {% endif %}
 </body>
 </html>
