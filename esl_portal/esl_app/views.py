@@ -62,6 +62,7 @@ def log_out(request):
     logout(request)
     return redirect('/main/')
 
+
 def register(request):
     if request.user.is_authenticated:
         return redirect('/main/')
@@ -92,6 +93,7 @@ def profile_options(request):
 def test_list(request):
     list_of_tests = get_list_or_404(Test.objects.all())
     return render(request, 'esl_app/tests.html', {'list': list_of_tests})
+
 
 def test(request, test_id):
     some_test = get_object_or_404(Test, pk=test_id)
