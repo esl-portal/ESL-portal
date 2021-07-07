@@ -22,3 +22,9 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Пароли не совпадают')
 
         return cd['password2']
+
+class UserForgotForm(forms.Form):
+    username = forms.CharField(label="Введите имя пользователя", max_length=150)
+    password = forms.CharField(label="Введите новый пароль", widget=forms.PasswordInput)
+    password_confirmation = forms.CharField(label="Введите новый пароль ещё раз",
+                                            widget=forms.PasswordInput)

@@ -1,1 +1,18 @@
-{{time}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% if is_empty %}
+        <p>Вы еще не прошли ни одного теста! <a href="{% url 'test_list' %}">Пройти</a></p>
+    {% else %}
+        {% for completion in completions %}
+            <h1>{{ completion.test.test_name }}</h1>
+            <p>{{ completion.num_of_correct }} / {{ completion.test.questions.count }}</p>
+            <a href="{% url 'test' completion.test.id %}">Перепройти</a>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

@@ -31,8 +31,31 @@ def log_in(request):
 
 
 def login_forgot(request):
-    now = 14141414
-    return render(request, 'esl_app/forgot.html', {'time': now})
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        password_confirmation = request.POST['password_confirmation']
+        try:
+            user = User.objects.get(username=username)
+            if password == password_confirmation:
+                user.set_password(password)
+                user.save()
+                return redirect(to='/login/')
+            else:
+                form = UserForgotForm(request.POST)
+                return render(request, 'esl_app/forgot.html', {'wrong_credentials': True,
+                                                               'form': form})
+        except models.Model.DoesNotExist:
+            form = UserForgotForm(request.POST)
+            return render(request, 'esl_app/forgot.html', {'wrong_credentials': True,
+                                                           'form': form})
+    else:
+        if request.user.is_authenticated:
+            return redirect('/main/')
+        else:
+            form = UserForgotForm()
+            return render(request, 'esl_app/forgot.html', {'wrong_credentials': False,
+                                                           'form': form})
 
 def log_out(request):
     logout(request)
@@ -53,15 +76,17 @@ def register(request):
     return render(request, 'esl_app/register.html', {'user_form': user_form})
 
 
-
-
 @login_required(login_url='/login/')
 def profile(request):
     return render(request, 'esl_app/profile.html', {'user': request.user})
 
+@login_required(login_url='/login/')
 def profile_completed(request):
-    now = datetime.now()
-    return render(request, 'esl_app/completed.html', {'time': now})
+    user = request.user
+    completions = Completion.objects.filter(user=user)
+    is_empty = len(completions) == 0
+    return render(request, 'esl_app/completed.html', {'completions': completions,
+                                                      'is_empty': is_empty})
 
 def profile_options(request):
     now = datetime.now()
@@ -77,6 +102,7 @@ def test(request, test_id):
     return render(request, 'esl_app/some_test.html', {'some_test': some_test,
                                                       'questions': questions})
 
-def test_result(request):
-    now = datetime.now()
-    return render(request, 'esl_app/result.html', {'time': now})
+@login_required(login_url='/login/')
+def test_result(request, test_id):
+    completion = Completion.objects.filter(user=request.user, test_id=test_id)
+    return render(request, 'esl_app/completed.html', {'completion': completion})
