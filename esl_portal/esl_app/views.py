@@ -36,9 +36,11 @@ def login_forgot(request):
 
 def log_out(request):
     logout(request)
-    return redirect('/login')
+    return redirect('/main/')
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('/main/')
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid() and user_form.clean_password2():
