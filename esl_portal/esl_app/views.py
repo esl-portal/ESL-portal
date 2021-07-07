@@ -68,9 +68,9 @@ def register(request):
         return redirect('/main/')
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid() and user_form.clean_password2():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
+        if user_form.is_valid() and request.POST['password'] == request.POST['password2']:
+            new_user = User(username=request.POST['username'], first_name=request.POST['first_name'],
+                            email=request.POST['email'], password=request.POST['password'])
             new_user.save()
             return redirect('/login/')
     else:
@@ -106,3 +106,8 @@ def test(request, test_id):
 def test_result(request, test_id):
     completion = Completion.objects.filter(user=request.user, test_id=test_id)
     return render(request, 'esl_app/completed.html', {'completion': completion})
+
+
+@login_required(login_url='/login/')
+def profile(request):
+    return render(request, 'esl_app/profile.html', {'user': request.user})
