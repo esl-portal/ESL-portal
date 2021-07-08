@@ -31,3 +31,4 @@ class UserRegistrationForm(forms.Form):
             raise forms.ValidationError('Пароли не совпадают')
 
         return cd['password2']
+

@@ -1,8 +1,98 @@
-{% if some_test %}
-    <h1>{{some_test.test_name}}</h1>
-    <h3>{{some_test.test_description}}</h3>
-    <h3>{{some_test.level}}</h3>
-    <h3>{{some_test.aspect}}</h3>
-    <h4>{{some_test.time_limit}} minutes</h4>
-    <button>Начать выполнение</button>
-{% endif %}
+{#{% if some_test %}#}
+{#    <h1>{{some_test.test_name}}</h1>#}
+{#    <h3>{{some_test.test_description}}</h3>#}
+{#    <h3>{{some_test.level}}</h3>#}
+{#    <h3>{{some_test.aspect}}</h3>#}
+{#    <h4>{{some_test.time_limit}} minutes</h4>#}
+{#    <button id="start-button">Начать выполнение</button>#}
+{#{% endif %}#}
+{#{% block javascript %}#}
+{#    <script>#}
+{##}
+{#    </script>#}
+{#{% endblock %}#}
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}{% endblock title %}</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    {% block style %}
+
+    {% endblock style %}
+
+</head>
+
+
+<body>
+
+    {% block content %}
+        <div id="test-info">
+            {% if some_test %}
+                <h1>{{some_test.test_name}}</h1>
+                <h3>{{some_test.test_description}}</h3>
+                <h3>{{some_test.level}}</h3>
+                <h3>{{some_test.aspect}}</h3>
+                <h4>{{some_test.time_limit}} minutes</h4>
+                <button id="start-button">Начать выполнение</button>
+            {% endif %}
+        </div>
+        <div id="completion">
+
+        </div>
+    {% endblock content %}
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    {% block javascript %}
+        <script>
+            $('button#start-button').click(function (button) {
+                $.ajax({
+                    method: 'GET',
+                    url: '{% url 'start_test' test_id=some_test.id %}',
+                    data: {},
+                    success: function (data) {
+                        let choices = '';
+                        if (data.type_of_question === 'Single') {
+                            for (let i = 0; i < data.num_of_answers; i++) {
+                                choices += '<input type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
+                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                            }
+                        }
+                        else if (data.type_of_question === 'Multiple') {
+                            for (let i = 0; i < data.num_of_answers; i++) {
+                                choices += '<input type="checkbox" value=" ' + data.answers[i][0] + '">' + '\n';
+                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                            }
+                        }
+                        else {
+                            choices += '<input type="text" name="answer">';
+                        }
+                        $('#test-info').hide();
+                        $('#completion').append(`<form method="post" action="{% url 'respond' test_id=some_test.id %}">{% csrf_token %}` + choices + `<button value='Submit' type='submit'>` +`</form>`);
+                    }
+                });
+            });
+        </script>
+    {% endblock javascript %}
+
+</body>
+
+
+</html>

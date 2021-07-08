@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import models
+from django.http import JsonResponse
 # Create your views here.
 
 
@@ -87,7 +88,7 @@ def profile_completed(request):
 
 
 def profile_options(request):
-    pass
+    return render(request, 'esl_app/options.html', {'user': request.user})
 
 
 def test_list(request):
@@ -97,17 +98,45 @@ def test_list(request):
 
 def test(request, test_id):
     some_test = get_object_or_404(Test, pk=test_id)
-    questions = some_test.questions.all()
-    return render(request, 'esl_app/some_test.html', {'some_test': some_test,
-                                                      'questions': questions})
+    return render(request, 'esl_app/some_test.html', {'some_test': some_test})
 
 
 @login_required(login_url='/login/')
 def test_result(request, test_id):
     completion = Completion.objects.filter(user=request.user, test_id=test_id)
-    return render(request, 'esl_app/completed.html', {'completion': completion})
+    return render(request, 'esl_app/completed.html', {'completion': completion,
+                                                      'amount_of_questions':
+                                                          Test.objects.get(pk=test_id).questions.count()})
 
 
 @login_required(login_url='/login/')
 def profile(request):
     return render(request, 'esl_app/profile.html', {'user': request.user})
+
+
+def start_test(request, test_id):
+    count = 0
+    question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
+    completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True, taken_time=0,
+                            num_of_correct=0)
+    completion.save()
+    answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
+    response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
+                'answers': answers, 'num_of_answers': len(answers)}
+    return JsonResponse(response)
+
+
+def next_question(request, test_id):
+    pass
+
+
+def previous_question(request, test_id):
+    pass
+
+
+def respond(request, test_id):
+    pass
+
+
+def finish_test(request, test_id):
+    pass
