@@ -7,7 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 
 def main(request):
-    return render(request, 'esl_app/main.html', {'auth': request.user.is_authenticated})
+    return render(request, 'esl_app/main.html', {'auth': request.user.is_authenticated,
+                                                 'request': request})
 
 def log_in(request):
     if request.method == 'POST':
@@ -66,9 +67,11 @@ def register(request):
         return redirect('/main/')
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid() and user_form.clean_password2():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
+        if user_form.is_valid() and (request.POST['password'] == request.POST['password2']) and user_form.unique():
+            new_user = User(username=request.POST['username'],
+                            first_name=request.POST['first_name'],
+                            email=request.POST['email'],
+                            password=request.POST['password'])
             new_user.save()
             return redirect('/login/')
     else:
@@ -88,9 +91,32 @@ def profile_completed(request):
     return render(request, 'esl_app/completed.html', {'completions': completions,
                                                       'is_empty': is_empty})
 
+@login_required(login_url='/login/')
 def profile_options(request):
-    now = datetime.now()
-    return render(request, 'esl_app/options.html', {'time': now})
+    user = request.user
+    if request.method == 'POST':
+        form = UserChangeData(request.POST)
+        if form.is_valid():
+            new_username = request.POST['new_username']
+            new_email = request.POST['new_email']
+            new_first_name = request.POST['new_first_name']
+            if user.username != new_username:
+                user.username = new_username
+            if user.email != new_email:
+                user.email = new_email
+            if user.first_name != new_first_name:
+                user.first_name = new_first_name
+            if request.POST['new_password'] != '':
+                user.set_password(request.POST['new_password'])
+            user.save()
+            return redirect('/profile/')
+    else:
+        data = {'new_username': user.username,
+                'new_first_name': user.first_name,
+                'new_email': user.email}
+        form = UserChangeData(initial=data)
+    return render(request, 'esl_app/options.html', {'user': request.user,
+                                                    'form': form})
 
 def test_list(request):
     list_of_tests = get_list_or_404(Test.objects.all())

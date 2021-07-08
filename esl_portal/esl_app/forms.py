@@ -3,28 +3,29 @@ from django import forms
 from django.contrib.auth.models import User
 
 
-class UserLoginForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'password']
+class UserLoginForm(forms.Form):
+    username = forms.CharField(label='Введите имя пользователя', max_length=150)
+    password = forms.CharField(label='Введите пароль', widget=forms.PasswordInput)
 
-class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Подтвердите пароль', widget=forms.PasswordInput)
-
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'email']
-
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Пароли не совпадают')
-
-        return cd['password2']
 
 class UserForgotForm(forms.Form):
     username = forms.CharField(label="Введите имя пользователя", max_length=150)
     password = forms.CharField(label="Введите новый пароль", widget=forms.PasswordInput)
-    password_confirmation = forms.CharField(label="Введите новый пароль ещё раз",
-                                            widget=forms.PasswordInput)
+    password_confirmation = forms.CharField(label="Введите новый пароль ещё раз", widget=forms.PasswordInput)
+
+
+class UserRegistrationForm(forms.Form):
+    username = forms.CharField(label='Имя пользователя', max_length=150)
+    first_name = forms.CharField(label='Ваше имя')
+    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput)
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput)
+
+    def unique(self):
+        return not User.objects.filter(username=self.cleaned_data['username']).exists()
+
+class UserChangeData(forms.Form):
+    new_username = forms.CharField(label='Имя пользователя', max_length=50)
+    new_first_name = forms.CharField(label='Ваше имя')
+    new_email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput)
+    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False)
