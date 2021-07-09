@@ -34,7 +34,7 @@ h1
     width: 100%;
     height: 100vh;
 
-    background: url("../images/city.jpg") center no-repeat;
+    background: url("./city.jpg") center no-repeat;
     -webkit-background-size: cover;
     background-size: cover;
 }
@@ -193,7 +193,3 @@ h1
     color: #42aaff;
     text-transform: uppercase;
 }
-
-
-
-

@@ -1,9 +1,75 @@
-{% if list %}
-    <ul>
-        {% for test in list %}
-            <li><a href="/tests/{{test.id}}/">{{test.test_name}}</a></li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>Нет тестов</p>
-{% endif %}
+{#{% if list %}#}
+{#    <ul>#}
+{#        {% for test in list %}#}
+{#            <li><a href="/tests/{{test.id}}/">{{test.test_name}}</a></li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{% else %}#}
+{#    <p>Нет тестов</p>#}
+{#{% endif %}#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'esl_app/tests_style.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
+</head>
+<body>
+
+
+
+<section class="section">
+    <header class="header">
+    <div class="container">
+        <div class="header__inner">
+            <nav class="nav">
+                <a class="nav__link active" href="#">Все тесты</a>
+                <a class="nav__link active" href="#">Пройденные тесты</a>
+                <a class="nav__link active" href="#">Непройденные тесты</a>
+            </nav>
+        </div>
+    </div>
+</header>
+    <div class="container">
+
+        <div class="section__header">
+            <h2 class="section__title">Проверь свои знания!</h2>
+            <div class="section__text">
+                <p>Значимость английского языка в современном мире можно оценить буквально одной строкой: английский язык -это международный язык общения. Более полутора миллиардов людей на Земле разговаривают на английском, а сколько его изучает - даже подсчитать сложно.</p>
+            </div>
+
+    </div>
+
+
+
+        <div class="about">
+            <div class="about__item">
+                <div class="about__img">
+                    <img src="{% static 'esl_app/1.jpg' %}" alt="">
+                </div>
+                <div class="about__text">Основы</div>
+            </div>
+
+            <div class="about__item">
+                <div class="about__img">
+                    <img src="{% static 'esl_app/2.jpg' %}" alt="">
+                </div>
+                <div class="about__text">Грамматика</div>
+            </div>
+
+            <div class="about__item">
+                <div class="about__img">
+                    <img src="{% static 'esl_app/3.jpg' %}" alt="">
+                </div>
+                <div class="about__text">Лингвистика</div>
+            </div>
+        </div>
+
+    </div><!-- /.container -->
+</section>
+
+
+
+</body>
+</html>
