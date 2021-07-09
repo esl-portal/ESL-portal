@@ -21,14 +21,12 @@ class UserRegistrationForm(forms.Form):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput)
 
-    # class Meta:
-    #     model = User
-    #     fields = []
+    def unique(self):
+        return not User.objects.filter(username=self.cleaned_data['username']).exists()
 
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Пароли не совпадают')
 
-        return cd['password2']
-
+class UserChangeData(forms.Form):
+    new_username = forms.CharField(label='Имя пользователя', max_length=50)
+    new_first_name = forms.CharField(label='Ваше имя')
+    new_email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput)
+    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False)

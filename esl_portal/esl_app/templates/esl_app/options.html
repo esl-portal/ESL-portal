@@ -1,1 +1,21 @@
-{{time}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    {% block content %}
+        <h2>Настройка профиля {{user.username}}</h2>
+        <form action="{% url 'profile_options' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p>
+                <input type="submit" value="Применить">
+            </p>
+        </form>
+    {% endblock %}
+</body>
+
+</html>
