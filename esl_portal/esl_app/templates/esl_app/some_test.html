@@ -62,7 +62,23 @@
 
     {% block javascript %}
         <script>
-            $('button#start-button').click(function (button) {
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                const csrftoken = getCookie('csrftoken');
+            $('button#start-button').click(function (event) {
                 $.ajax({
                     method: 'GET',
                     url: '{% url 'start_test' test_id=some_test.id %}',
@@ -71,24 +87,69 @@
                         let choices = '';
                         if (data.type_of_question === 'Single') {
                             for (let i = 0; i < data.num_of_answers; i++) {
-                                choices += '<input type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
+                                choices += '<input class="answer" type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
                                 choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else if (data.type_of_question === 'Multiple') {
                             for (let i = 0; i < data.num_of_answers; i++) {
-                                choices += '<input type="checkbox" value=" ' + data.answers[i][0] + '">' + '\n';
+                                choices += '<input class="answer" type="checkbox" value=" ' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
                                 choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else {
-                            choices += '<input type="text" name="answer">';
+                            choices += '<input type="text" name="answer1" class="answer">';
                         }
                         $('#test-info').hide();
-                        $('#completion').append(`<form method="post" action="{% url 'respond' test_id=some_test.id %}">{% csrf_token %}` + choices + `<button value='Submit' type='submit'>` +`</form>`);
+                        $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
                     }
                 });
             });
+
+            function respond() {
+                let answer = '';
+                let input_type = $('input.answer').attr('type');
+                if (input_type === 'radio') {
+                    answer = $('input.answer:checked').val();
+                }
+                else if (input_type === 'checkbox') {
+                    answer = $('input.answer:checked').each(function (index) {
+                        answer += this.val() + '|';
+                    });
+                }
+                else {
+                    answer = $('input.answer').val();
+                }
+                let question_text = $('#question_text').text();
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url 'respond' test_id=some_test.id %}',
+                    data: {
+                        'question_text': question_text,
+                        'answer': answer
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    },
+                    success: function (data) {
+                        if (data.is_correct === true) {
+                            let congrats_message = `<h3>Поздравляем! Вы ответили правильно</h3>`;
+                            $('#completion').prepend(congrats_message);
+                            $('input.answer').prop('disabled', true);
+                            $('#respond-btn').prop('disabled', true);
+                        }
+                        else {
+                            let error_message = `<h3>К сожалению, вы ответили неверно</h3>`;
+                            $('#completion').prepend(error_message);
+                            $('input.answer').prop('disabled', true);
+                            $('#respond-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function () {
+                        console.log("Something went wrong!");
+                    }
+                });
+            }
         </script>
     {% endblock javascript %}
 

@@ -143,9 +143,10 @@ def profile(request):
 def start_test(request, test_id):
     count = 0
     question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
-    completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True, taken_time=0,
-                            num_of_correct=0)
-    completion.save()
+    if len(Completion.objects.filter(user__username=request.user.username, test_id=test_id)) == 0:
+        completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True, taken_time=0,
+                                num_of_correct=0)
+        completion.save()
     answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
     response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
                 'answers': answers, 'num_of_answers': len(answers)}
@@ -161,7 +162,59 @@ def previous_question(request, test_id):
 
 
 def respond(request, test_id):
-    pass
+    if request.is_ajax():
+        completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
+        print(request.POST.get('question_text', 'There\'s no text'))
+        test_question_answer = list(
+            Answer.objects.filter(related_question=Question.objects.get(question_text=request.POST['question_text']),
+                                  related_question__test=Test.objects.get(pk=test_id), is_correct=True).values_list(
+                'answer_text', flat=True))
+        user_answer = str(request.POST['answer']).split("|")
+        is_correct = True
+        for answer in user_answer:
+            if not test_question_answer.__contains__(answer):
+                is_correct = False
+                break
+        if len(user_answer) != len(test_question_answer):
+            is_correct = False
+        if (len(UserAnswer.objects.filter(user=request.user,
+                                          answer__related_question=Question.objects.get(
+                                              question_text=request.POST['question_text']),
+                                          answer__related_question__test=Test.objects.get(pk=test_id))) != 0):
+            stored_user_answer = UserAnswer.objects.filter(user=request.user,
+                                                           answer__related_question=Question.objects.get(
+                                                               question_text=request.POST['question_text']),
+                                                           answer__related_question__test=Test.objects.get(pk=test_id))
+            if list(stored_user_answer.values_list('is_correct', flat=True)).__contains__(False) and is_correct == True:
+                completion.num_of_correct += 1
+                completion.save()
+            elif not list(stored_user_answer.values_list('is_correct', flat=True)).__contains__(False) \
+                    and len(list(stored_user_answer.values_list('is_correct', flat=True))) == len(test_question_answer) \
+                    and is_correct == False:
+                completion.num_of_correct -= 1
+                completion.save()
+            elif len(list(stored_user_answer.values_list('is_correct', flat=True))) != len(test_question_answer) \
+                    and is_correct == True:
+                completion.num_of_correct += 1
+                completion.save()
+            stored_user_answer.update(is_correct=is_correct)
+        else:
+            for answer in user_answer:
+                if test_question_answer.__contains__(answer):
+                    stored_answer = Answer.objects.get(answer_text=answer) \
+                        if list(Answer.objects.all().values_list('answer_text', flat=True)).__contains__(
+                        answer) else None
+                    stored_is_correct = True if test_question_answer.__contains__(answer) else False
+                    stored_user_answer = UserAnswer(user=request.user, answer=stored_answer,
+                                                    is_correct=stored_is_correct,
+                                                    answer_text=answer)
+                    stored_answer.save()
+
+            if is_correct:
+                completion.num_of_correct += 1
+                completion.save()
+        print(is_correct)
+        return JsonResponse({'is_correct': is_correct})
 
 
 def finish_test(request, test_id):
