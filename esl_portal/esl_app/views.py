@@ -164,7 +164,6 @@ def previous_question(request, test_id):
 def respond(request, test_id):
     if request.is_ajax():
         completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
-        print(request.POST.get('question_text', 'There\'s no text'))
         test_question_answer = list(
             Answer.objects.filter(related_question=Question.objects.get(question_text=request.POST['question_text']),
                                   related_question__test=Test.objects.get(pk=test_id), is_correct=True).values_list(
@@ -177,7 +176,7 @@ def respond(request, test_id):
                 break
         if len(user_answer) != len(test_question_answer):
             is_correct = False
-        if (len(UserAnswer.objects.filter(user=request.user,
+        if (len(UserAnswer.objects.filter(user__username=request.user.username,
                                           answer__related_question=Question.objects.get(
                                               question_text=request.POST['question_text']),
                                           answer__related_question__test=Test.objects.get(pk=test_id))) != 0):
@@ -200,7 +199,6 @@ def respond(request, test_id):
             stored_user_answer.update(is_correct=is_correct)
         else:
             for answer in user_answer:
-                if test_question_answer.__contains__(answer):
                     stored_answer = Answer.objects.get(answer_text=answer) \
                         if list(Answer.objects.all().values_list('answer_text', flat=True)).__contains__(
                         answer) else None
@@ -208,12 +206,11 @@ def respond(request, test_id):
                     stored_user_answer = UserAnswer(user=request.user, answer=stored_answer,
                                                     is_correct=stored_is_correct,
                                                     answer_text=answer)
-                    stored_answer.save()
+                    stored_user_answer.save()
 
             if is_correct:
                 completion.num_of_correct += 1
                 completion.save()
-        print(is_correct)
         return JsonResponse({'is_correct': is_correct})
 
 
