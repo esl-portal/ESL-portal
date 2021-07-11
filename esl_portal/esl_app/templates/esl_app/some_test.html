@@ -101,7 +101,29 @@
                             choices += '<input type="text" name="answer1" class="answer">';
                         }
                         $('#test-info').hide();
-                        $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
+                        $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
+                        let next_btn = ``;
+                        if (data.is_last) {
+                            next_btn = `<input type="button" value="Следующий вопрос" id="next-btn" onclick="next()" style="display: none;" disabled="">`;
+                        }
+                        else {
+                            next_btn = `<input type="button" value="Следующий вопрос" id="next-btn" onclick="next()" style="display: none;">`;
+                        }
+                        let prev_btn = ``;
+                        if (data.num_of_question === 1) {
+                            prev_btn = `<input type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" style="display: none;" disabled="">`;
+                        }
+                        else {
+                            prev_btn = `<input type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" style="display: none;">`;
+                        }
+                        let finish_btn = ``;
+                        if (data.is_last) {
+                            finish_btn = `<input type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" style="display: none;">`;
+                        }
+                        else {
+                            finish_btn = `<input type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" style="display: none;" disabled="">`;
+                        }
+                        $('#completion').append(next_btn, prev_btn, finish_btn);
                     }
                 });
             });
@@ -137,16 +159,136 @@
                             $('#completion').prepend(congrats_message);
                             $('input.answer').prop('disabled', true);
                             $('#respond-btn').prop('disabled', true);
+                            $('#next-btn').show();
+                            $('#prev-btn').show();
+                            $('#finish-btn').show();
                         }
                         else {
                             let error_message = `<h3>К сожалению, вы ответили неверно</h3>`;
                             $('#completion').prepend(error_message);
                             $('input.answer').prop('disabled', true);
                             $('#respond-btn').prop('disabled', true);
+                            $('#next-btn').show();
+                            $('#prev-btn').show();
+                            $('#finish-btn').show();
                         }
                     },
                     error: function () {
                         console.log("Something went wrong!");
+                    }
+                });
+            }
+            function next() {
+                let num_of_question = $('.question-form').attr('count');
+                $.ajax({
+                   method: 'GET',
+                   url: '{% url 'next_question' test_id=some_test.id %}',
+                   data: {
+                       'count': num_of_question
+                   },
+                   success: function (data) {
+                       let choices = '';
+                        if (data.type_of_question === 'Single') {
+                            for (let i = 0; i < data.num_of_answers; i++) {
+                                choices += '<input class="answer" type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
+                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                            }
+                        }
+                        else if (data.type_of_question === 'Multiple') {
+                            for (let i = 0; i < data.num_of_answers; i++) {
+                                choices += '<input class="answer" type="checkbox" value=" ' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
+                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                            }
+                        }
+                        else {
+                            choices += '<input type="text" name="answer1" class="answer">';
+                        }
+                        $('#test-info').hide();
+                        $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
+                        let next_btn = ``;
+                        if (data.is_last) {
+                            next_btn = `<input type="button" value="Следующий вопрос" id="next-btn" onclick="next()" style="display: none;" disabled="">`;
+                        }
+                        else {
+                            next_btn = `<input type="button" value="Следующий вопрос" id="next-btn" onclick="next()" style="display: none;">`;
+                        }
+                        let prev_btn = ``;
+                        if (data.num_of_question === 1) {
+                            prev_btn = `<input type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" style="display: none;" disabled="">`;
+                        }
+                        else {
+                            prev_btn = `<input type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" style="display: none;">`;
+                        }
+                        let finish_btn = ``;
+                        if (data.is_last) {
+                            finish_btn = `<input type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" style="display: none;">`;
+                        }
+                        else {
+                            finish_btn = `<input type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" style="display: none;" disabled="">`;
+                        }
+                        $('#completion').append(next_btn, prev_btn, finish_btn);
+                   }
+                });
+            }
+            function prev() {
+                let num_of_question = $('.question-form').attr('count');
+                $.ajax({
+                   method: 'GET',
+                   url: '{% url 'previous_question' test_id=some_test.id %}',
+                   data: {
+                       'count': num_of_question
+                   },
+                   success: function (data) {
+                       let choices = '';
+                        if (data.type_of_question === 'Single') {
+                            for (let i = 0; i < data.num_of_answers; i++) {
+                                choices += '<input class="answer" type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
+                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                            }
+                        }
+                        else if (data.type_of_question === 'Multiple') {
+                            for (let i = 0; i < data.num_of_answers; i++) {
+                                choices += '<input class="answer" type="checkbox" value=" ' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
+                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                            }
+                        }
+                        else {
+                            choices += '<input type="text" name="answer1" class="answer">';
+                        }
+                        $('#test-info').hide();
+                        $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
+                        let next_btn = ``;
+                        if (data.is_last) {
+                            next_btn = `<input type="button" value="Следующий вопрос" id="next-btn" onclick="next()" style="display: none;" disabled="">`;
+                        }
+                        else {
+                            next_btn = `<input type="button" value="Следующий вопрос" id="next-btn" onclick="next()" style="display: none;">`;
+                        }
+                        let prev_btn = ``;
+                        if (data.num_of_question === 1) {
+                            prev_btn = `<input type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" style="display: none;" disabled="">`;
+                        }
+                        else {
+                            prev_btn = `<input type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" style="display: none;">`;
+                        }
+                        let finish_btn = ``;
+                        if (data.is_last) {
+                            finish_btn = `<input type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" style="display: none;">`;
+                        }
+                        else {
+                            finish_btn = `<input type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" style="display: none;" disabled="">`;
+                        }
+                        $('#completion').append(next_btn, prev_btn, finish_btn);
+                   }
+                });
+            }
+            function finish() {
+                $.ajax({
+                    method: 'GET',
+                    url: '{% url 'finish_test' test_id=some_test.id %}',
+                    data: {},
+                    success: function (data) {
+                        window.location.replace(data.redirect_url);
                     }
                 });
             }

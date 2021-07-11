@@ -135,30 +135,44 @@ def test_result(request, test_id):
                                                       'amount_of_questions':
                                                           Test.objects.get(pk=test_id).questions.count()})
 
+
 @login_required(login_url='/login/')
 def profile(request):
     return render(request, 'esl_app/profile.html', {'user': request.user})
 
 
 def start_test(request, test_id):
-    count = 0
+    count = 1
     question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
     if len(Completion.objects.filter(user__username=request.user.username, test_id=test_id)) == 0:
         completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True, taken_time=0,
                                 num_of_correct=0)
         completion.save()
     answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
+    is_last = True if Test.objects.get(pk=test_id).questions.count() == 1 else False
     response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
-                'answers': answers, 'num_of_answers': len(answers)}
+                'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
     return JsonResponse(response)
 
 
 def next_question(request, test_id):
-    pass
+    count = request.GET['count'] + 1
+    question = Test.objects.get(pk=test_id).questions.order_by('id')[request.GET['count'] - 1]
+    answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
+    is_last = True if Test.objects.get(pk=test_id).questions.count() == 1 else False
+    response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
+                'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
+    return JsonResponse(response)
 
 
 def previous_question(request, test_id):
-    pass
+    count = request.GET['count'] - 1
+    question = Test.objects.get(pk=test_id).questions.order_by('id')[request.GET['count'] - 2]
+    answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
+    is_last = True if Test.objects.get(pk=test_id).questions.count() == 1 else False
+    response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
+                'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
+    return JsonResponse(response)
 
 
 def respond(request, test_id):
@@ -215,4 +229,5 @@ def respond(request, test_id):
 
 
 def finish_test(request, test_id):
-    pass
+    response = {'redirect_url': 'result/'}
+    return JsonResponse(response)
