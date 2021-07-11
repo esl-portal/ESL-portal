@@ -93,8 +93,8 @@
                         }
                         else if (data.type_of_question === 'Multiple') {
                             for (let i = 0; i < data.num_of_answers; i++) {
-                                choices += '<input class="answer" type="checkbox" value=" ' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
-                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                                choices += '<input class="answer" type="checkbox" value="' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
+                                choices += '<label for="answer' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else {
@@ -135,12 +135,12 @@
                     answer = $('input.answer:checked').val();
                 }
                 else if (input_type === 'checkbox') {
-                    answer = $('input.answer:checked').each(function (index) {
-                        answer += this.val() + '|';
+                    $('input.answer:checked').each(function (index) {
+                        answer += $(this).val() + '|';
                     });
                 }
                 else {
-                    answer = $('input.answer').val();
+                    answer = $('input.answer').val().toLowerCase();
                 }
                 let question_text = $('#question_text').text();
                 $.ajax({
@@ -179,7 +179,7 @@
                 });
             }
             function next() {
-                let num_of_question = $('.question-form').attr('count');
+                let num_of_question = $('.question-form').attr('data-count');
                 $.ajax({
                    method: 'GET',
                    url: '{% url 'next_question' test_id=some_test.id %}',
@@ -191,19 +191,19 @@
                         if (data.type_of_question === 'Single') {
                             for (let i = 0; i < data.num_of_answers; i++) {
                                 choices += '<input class="answer" type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
-                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                                choices += '<label for="answer' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else if (data.type_of_question === 'Multiple') {
                             for (let i = 0; i < data.num_of_answers; i++) {
-                                choices += '<input class="answer" type="checkbox" value=" ' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
-                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                                choices += '<input class="answer" type="checkbox" value="' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
+                                choices += '<label for="answer' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else {
                             choices += '<input type="text" name="answer1" class="answer">';
                         }
-                        $('#test-info').hide();
+                        $('#completion').empty();
                         $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
                         let next_btn = ``;
                         if (data.is_last) {
@@ -231,7 +231,7 @@
                 });
             }
             function prev() {
-                let num_of_question = $('.question-form').attr('count');
+                let num_of_question = $('.question-form').attr('data-count');
                 $.ajax({
                    method: 'GET',
                    url: '{% url 'previous_question' test_id=some_test.id %}',
@@ -243,19 +243,19 @@
                         if (data.type_of_question === 'Single') {
                             for (let i = 0; i < data.num_of_answers; i++) {
                                 choices += '<input class="answer" type="radio" value="' + data.answers[i][0] + '" name="answer' + (i+1) + '">' + '\n';
-                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                                choices += '<label for="answer' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else if (data.type_of_question === 'Multiple') {
                             for (let i = 0; i < data.num_of_answers; i++) {
-                                choices += '<input class="answer" type="checkbox" value=" ' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
-                                choices += '<label for="answer ' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
+                                choices += '<input class="answer" type="checkbox" value="' + data.answers[i][0] + '"name="answer"' + (i+1) + '>' + '\n';
+                                choices += '<label for="answer' + (i+1) + '">' + data.answers[i][0] + '</label><br>';
                             }
                         }
                         else {
                             choices += '<input type="text" name="answer1" class="answer">';
                         }
-                        $('#test-info').hide();
+                        $('#completion').empty();
                         $('#completion').append(`<form method="post" class="question-form" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text">` + data.question_text + `</h3>` + choices + `<input onclick="respond()" id="respond-btn" type="button" value="Ответить"></form>`);
                         let next_btn = ``;
                         if (data.is_last) {

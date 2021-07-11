@@ -130,10 +130,12 @@ def test(request, test_id):
 
 @login_required(login_url='/login/')
 def test_result(request, test_id):
-    completion = Completion.objects.filter(user=request.user, test_id=test_id)
-    return render(request, 'esl_app/completed.html', {'completion': completion,
+    completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
+    user_answers = list(UserAnswer.objects.filter(user__username=request.user.username, answer__related_question__test=Test.objects.get(pk=test_id)))
+    return render(request, 'esl_app/result.html', {'completion': completion,
                                                       'amount_of_questions':
-                                                          Test.objects.get(pk=test_id).questions.count()})
+                                                          Test.objects.get(pk=test_id).questions.count(),
+                                                   'user_answers': user_answers})
 
 
 @login_required(login_url='/login/')
@@ -149,27 +151,27 @@ def start_test(request, test_id):
                                 num_of_correct=0)
         completion.save()
     answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
-    is_last = True if Test.objects.get(pk=test_id).questions.count() == 1 else False
+    is_last = True if Test.objects.get(pk=test_id).questions.count() == count else False
     response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
                 'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
     return JsonResponse(response)
 
 
 def next_question(request, test_id):
-    count = request.GET['count'] + 1
-    question = Test.objects.get(pk=test_id).questions.order_by('id')[request.GET['count'] - 1]
+    count = int(request.GET['count']) + 1
+    question = Test.objects.get(pk=test_id).questions.order_by('id')[int(request.GET['count'])]
     answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
-    is_last = True if Test.objects.get(pk=test_id).questions.count() == 1 else False
+    is_last = True if Test.objects.get(pk=test_id).questions.count() == count else False
     response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
                 'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
     return JsonResponse(response)
 
 
 def previous_question(request, test_id):
-    count = request.GET['count'] - 1
-    question = Test.objects.get(pk=test_id).questions.order_by('id')[request.GET['count'] - 2]
+    count = int(request.GET['count']) - 1
+    question = Test.objects.get(pk=test_id).questions.order_by('id')[int(request.GET['count']) - 2]
     answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
-    is_last = True if Test.objects.get(pk=test_id).questions.count() == 1 else False
+    is_last = True if Test.objects.get(pk=test_id).questions.count() == count else False
     response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
                 'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
     return JsonResponse(response)
@@ -177,12 +179,14 @@ def previous_question(request, test_id):
 
 def respond(request, test_id):
     if request.is_ajax():
-        completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
+        completion = Completion.objects.get(user__username=request.user.username, test=Test.objects.get(pk=test_id))
         test_question_answer = list(
             Answer.objects.filter(related_question=Question.objects.get(question_text=request.POST['question_text']),
                                   related_question__test=Test.objects.get(pk=test_id), is_correct=True).values_list(
                 'answer_text', flat=True))
         user_answer = str(request.POST['answer']).split("|")
+        if user_answer[-1] == '' and len(user_answer) > 1:
+            user_answer.__delitem__(-1)
         is_correct = True
         for answer in user_answer:
             if not test_question_answer.__contains__(answer):
@@ -190,6 +194,7 @@ def respond(request, test_id):
                 break
         if len(user_answer) != len(test_question_answer):
             is_correct = False
+        print(is_correct)
         if (len(UserAnswer.objects.filter(user__username=request.user.username,
                                           answer__related_question=Question.objects.get(
                                               question_text=request.POST['question_text']),
@@ -213,14 +218,23 @@ def respond(request, test_id):
             stored_user_answer.update(is_correct=is_correct)
         else:
             for answer in user_answer:
-                    stored_answer = Answer.objects.get(answer_text=answer) \
-                        if list(Answer.objects.all().values_list('answer_text', flat=True)).__contains__(
-                        answer) else None
-                    stored_is_correct = True if test_question_answer.__contains__(answer) else False
-                    stored_user_answer = UserAnswer(user=request.user, answer=stored_answer,
-                                                    is_correct=stored_is_correct,
-                                                    answer_text=answer)
-                    stored_user_answer.save()
+                if list(Answer.objects.filter(answer_text=answer,
+                                              related_question=Question.objects.get(question_text=request.POST['question_text']),
+                                              related_question__test=Test.objects.get(pk=test_id)).values_list('answer_text', flat=True)).__contains__(answer):
+
+                    stored_answer = Answer.objects.get(answer_text=answer,
+                                                       related_question=Question.objects.get(
+                                                           question_text=request.POST['question_text']),
+                                                       related_question__test=Test.objects.get(pk=test_id))
+                else:
+                    stored_answer = Answer.objects.get(related_question=Question.objects.get(question_text=request.POST['question_text']),
+                                  related_question__test=Test.objects.get(pk=test_id), is_correct=True)
+
+                stored_is_correct = True if test_question_answer.__contains__(answer) else False
+                stored_user_answer = UserAnswer(user=request.user, answer=stored_answer,
+                                                is_correct=stored_is_correct,
+                                                answer_text=answer)
+                stored_user_answer.save()
 
             if is_correct:
                 completion.num_of_correct += 1
@@ -229,5 +243,8 @@ def respond(request, test_id):
 
 
 def finish_test(request, test_id):
+    completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
+    completion.is_completed = True
+    completion.save()
     response = {'redirect_url': 'result/'}
     return JsonResponse(response)

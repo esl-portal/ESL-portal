@@ -1,0 +1,11 @@
+<p>Ваш результат: {{ completion.num_of_correct }} / {{ amount_of_questions }}</p>
+{% for user_answer in user_answers %}
+    <p>Вопрос: {{ user_answer.answer.related_question.question_text }}</p>
+    {% if user_answer.is_correct %}
+        <p>Ваш ответ: {{ user_answer.answer_text }} - верно</p>
+    {% else %}
+        <p>Ваш ответ: {{ user_answer.answer_text }} - неверно</p>
+    {% endif %}
+    <br>
+{% endfor %}
+
