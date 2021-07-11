@@ -40,7 +40,7 @@ class Test(models.Model):
         ("GR", "Grammar")
     )
     test_name = models.CharField(max_length=50)
-    test_description = models.CharField(max_length=1000)
+    test_description = models.TextField(max_length=1000)
     test_short_description = models.CharField(max_length=200)
     level = models.CharField(max_length=2, choices=LEVELS)
     aspect = models.CharField(max_length=2, choices=ASPECTS)
