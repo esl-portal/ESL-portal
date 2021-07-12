@@ -40,7 +40,7 @@ def login_forgot(request):
         username = request.POST['username']
         password = request.POST['password']
         password_confirmation = request.POST['password_confirmation']
-        try:
+        if User.objects.filter(username=username).count() != 0:
             user = User.objects.get(username=username)
             if password == password_confirmation:
                 user.set_password(password)
@@ -50,7 +50,7 @@ def login_forgot(request):
                 form = UserForgotForm(request.POST)
                 return render(request, 'esl_app/forgot.html', {'wrong_credentials': True,
                                                                'form': form})
-        except models.Model.DoesNotExist:
+        else:
             form = UserForgotForm(request.POST)
             return render(request, 'esl_app/forgot.html', {'wrong_credentials': True,
                                                            'form': form})
