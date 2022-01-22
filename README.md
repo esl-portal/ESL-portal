@@ -1,5 +1,6 @@
-1. Кастомизация админки под создание тестов
-2. Создание вопросов теста (сущность, банк)
-3. Доступ к тестам, их функционал (время прохождение, "зелёный/красный маркеры" и т.п.)
-4. Автосейв.
-5. Send result
+# ESL Portal
+
+Hi there! This repository is dedicated to a website for those who learn English as Second Language (ESL)
+
+## Used technologies
+Django 2.2, PostgreSQL 14.1, HTML, CSS, jQuery 3.3.1 & AJAX, Bootstrap 4.6
