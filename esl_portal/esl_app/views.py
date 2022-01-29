@@ -1,13 +1,10 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
-from .models import *
-from .forms import *
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db import models
 from django.http import JsonResponse
-# Create your views here.
+from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
+
+from .forms import *
+
 
 def main(request):
     context = {'is_authenticated': request.user.is_authenticated, 'request': request}
@@ -62,6 +59,7 @@ def login_forgot(request):
             return render(request, 'esl_app/forgot.html', {'wrong_credentials': False,
                                                            'form': form})
 
+
 def log_out(request):
     logout(request)
     return redirect('/main/')
@@ -92,6 +90,7 @@ def profile_completed(request):
     return render(request, 'esl_app/completed.html', {'completions': completions,
                                                       'is_empty': is_empty})
 
+
 @login_required(login_url='/login/')
 def profile_options(request):
     user = request.user
@@ -119,9 +118,11 @@ def profile_options(request):
     return render(request, 'esl_app/options.html', {'user': request.user,
                                                     'form': form})
 
+
 def test_list(request):
     list_of_tests = get_list_or_404(Test.objects.all())
     return render(request, 'esl_app/tests.html', {'list': list_of_tests})
+
 
 def test(request, test_id):
     some_test = get_object_or_404(Test, pk=test_id)
@@ -131,10 +132,11 @@ def test(request, test_id):
 @login_required(login_url='/login/')
 def test_result(request, test_id):
     completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
-    user_answers = list(UserAnswer.objects.filter(user__username=request.user.username, answer__related_question__test=Test.objects.get(pk=test_id)))
+    user_answers = list(UserAnswer.objects.filter(user__username=request.user.username,
+                                                  answer__related_question__test=Test.objects.get(pk=test_id)))
     return render(request, 'esl_app/result.html', {'completion': completion,
-                                                      'amount_of_questions':
-                                                          Test.objects.get(pk=test_id).questions.count(),
+                                                   'amount_of_questions':
+                                                       Test.objects.get(pk=test_id).questions.count(),
                                                    'user_answers': user_answers})
 
 
@@ -219,7 +221,8 @@ def respond(request, test_id):
         else:
             for answer in user_answer:
                 if list(Answer.objects.filter(answer_text=answer,
-                                              related_question=Question.objects.get(question_text=request.POST['question_text']),
+                                              related_question=Question.objects.get(
+                                                  question_text=request.POST['question_text']),
                                               related_question__test=Test.objects.get(pk=test_id)).values_list('answer_text', flat=True)).__contains__(answer):
 
                     stored_answer = Answer.objects.get(answer_text=answer,
@@ -227,8 +230,9 @@ def respond(request, test_id):
                                                            question_text=request.POST['question_text']),
                                                        related_question__test=Test.objects.get(pk=test_id))
                 else:
-                    stored_answer = Answer.objects.get(related_question=Question.objects.get(question_text=request.POST['question_text']),
-                                  related_question__test=Test.objects.get(pk=test_id), is_correct=True)
+                    stored_answer = Answer.objects.get(
+                        related_question=Question.objects.get(question_text=request.POST['question_text']),
+                        related_question__test=Test.objects.get(pk=test_id), is_correct=True)
 
                 stored_is_correct = True if test_question_answer.__contains__(answer) else False
                 stored_user_answer = UserAnswer(user=request.user, answer=stored_answer,
