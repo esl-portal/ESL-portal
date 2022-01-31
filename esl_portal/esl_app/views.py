@@ -6,6 +6,10 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404, redirec
 from .forms import *
 
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 def main(request):
     context = {'is_authenticated': request.user.is_authenticated, 'request': request}
     return render(request, 'esl_app/main.html', context)
@@ -66,6 +70,7 @@ def log_out(request):
 
 
 def register(request):
+    # TODO: rewrite registration cuz it doesn't save user
     if request.user.is_authenticated:
         return redirect('/main/')
     if request.method == 'POST':
@@ -180,7 +185,7 @@ def previous_question(request, test_id):
 
 
 def respond(request, test_id):
-    if request.is_ajax():
+    if is_ajax(request):
         completion = Completion.objects.get(user__username=request.user.username, test=Test.objects.get(pk=test_id))
         test_question_answer = list(
             Answer.objects.filter(related_question=Question.objects.get(question_text=request.POST['question_text']),
@@ -223,7 +228,8 @@ def respond(request, test_id):
                 if list(Answer.objects.filter(answer_text=answer,
                                               related_question=Question.objects.get(
                                                   question_text=request.POST['question_text']),
-                                              related_question__test=Test.objects.get(pk=test_id)).values_list('answer_text', flat=True)).__contains__(answer):
+                                              related_question__test=Test.objects.get(pk=test_id)).values_list(
+                    'answer_text', flat=True)).__contains__(answer):
 
                     stored_answer = Answer.objects.get(answer_text=answer,
                                                        related_question=Question.objects.get(
