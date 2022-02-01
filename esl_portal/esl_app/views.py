@@ -70,17 +70,15 @@ def log_out(request):
 
 
 def register(request):
-    # TODO: rewrite registration cuz it doesn't save user
     if request.user.is_authenticated:
         return redirect('/main/')
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid() and (request.POST['password'] == request.POST['password2']) and user_form.unique():
-            new_user = User(username=request.POST['username'],
+            new_user = User.objects.create_user(username=request.POST['username'],
                             first_name=request.POST['first_name'],
                             email=request.POST['email'],
                             password=request.POST['password'])
-            new_user.save()
             return redirect('/login/')
     else:
         user_form = UserRegistrationForm()
