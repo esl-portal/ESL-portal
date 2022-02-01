@@ -127,6 +127,7 @@ def test_list(request):
     return render(request, 'esl_app/tests.html', {'list': list_of_tests})
 
 
+@login_required(login_url='/login/')
 def test(request, test_id):
     some_test = get_object_or_404(Test, pk=test_id)
     return render(request, 'esl_app/some_test.html', {'some_test': some_test})
