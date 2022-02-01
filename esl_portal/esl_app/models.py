@@ -44,7 +44,6 @@ class Test(models.Model):
     test_short_description = models.CharField(max_length=200)
     level = models.CharField(max_length=2, choices=LEVELS)
     aspect = models.CharField(max_length=2, choices=ASPECTS)
-    time_limit = models.PositiveSmallIntegerField()
     questions = models.ManyToManyField(Question)
 
     def __str__(self):
