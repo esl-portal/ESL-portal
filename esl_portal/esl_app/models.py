@@ -61,7 +61,7 @@ class Completion(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     is_completed = models.BooleanField()
-    taken_time = models.PositiveIntegerField()
+    number_of_last_answered_question = models.PositiveSmallIntegerField()
     num_of_correct = models.PositiveSmallIntegerField()
     is_started = models.BooleanField()
 
