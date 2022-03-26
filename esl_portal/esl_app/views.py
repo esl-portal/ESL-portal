@@ -155,8 +155,15 @@ def profile(request):
 
 
 def start_test(request, test_id):
-    #  TODO: Проверить, есть ли такой Completion. Если есть, то взять count оттуда
-    count = 1
+    completion = Completion.objects.filter(test_id=test_id, user__username=request.user.username, is_started=True,
+                                        is_completed=False)
+    count = 0
+    if completion.count() > 0:
+        completion = completion[0]
+        count = completion.number_of_last_answered_question
+    else:
+        count = 1
+
     question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
     if len(Completion.objects.filter(user__username=request.user.username, test_id=test_id)) == 0:
         completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True, taken_time=0,
