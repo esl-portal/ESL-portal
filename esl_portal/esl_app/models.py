@@ -67,5 +67,3 @@ class Completion(models.Model):
 
     def __str__(self):
         return self.user.username.__str__() + "'s completion of " + self.test.__str__()
-
-

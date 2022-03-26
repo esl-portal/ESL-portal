@@ -88,7 +88,7 @@ def register(request):
 @login_required(login_url='/login/')
 def profile_completed(request):
     user = request.user
-    completions = Completion.objects.filter(user=user)
+    completions = Completion.objects.filter(user=user, is_completed=True)
     is_empty = len(completions) == 0
     return render(request, 'esl_app/completed.html', {'completions': completions,
                                                       'is_empty': is_empty})
@@ -130,7 +130,12 @@ def test_list(request):
 @login_required(login_url='/login/')
 def test(request, test_id):
     some_test = get_object_or_404(Test, pk=test_id)
-    return render(request, 'esl_app/some_test.html', {'some_test': some_test})
+    completion = Completion.objects.filter(test_id=test_id, user__username=request.user.username, is_started=True,
+                                        is_completed=False)
+    is_started = False
+    if completion.count() > 0:
+        is_started = True
+    return render(request, 'esl_app/some_test.html', {'some_test': some_test, 'is_started': is_started})
 
 
 @login_required(login_url='/login/')
@@ -150,6 +155,7 @@ def profile(request):
 
 
 def start_test(request, test_id):
+    #  TODO: Проверить, есть ли такой Completion. Если есть, то взять count оттуда
     count = 1
     question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
     if len(Completion.objects.filter(user__username=request.user.username, test_id=test_id)) == 0:
@@ -184,6 +190,7 @@ def previous_question(request, test_id):
 
 
 def respond(request, test_id):
+    # TODO: Принять count, проверить с тем, что сохранён в БД, если больше, то сохранить
     if is_ajax(request):
         completion = Completion.objects.get(user__username=request.user.username, test=Test.objects.get(pk=test_id))
         test_question_answer = list(
