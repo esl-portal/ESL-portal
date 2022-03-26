@@ -121,6 +121,7 @@
             function respond() {
                 let answer = '';
                 let input_type = $('input.answer').attr('type');
+                let num_of_question = $('.question-form').attr('data-count');
                 if (input_type === 'radio') {
                     answer = $('input.answer:checked').val();
                 }
@@ -138,7 +139,8 @@
                     url: '{% url 'respond' test_id=some_test.id %}',
                     data: {
                         'question_text': question_text,
-                        'answer': answer
+                        'answer': answer,
+                        'count': num_of_question
                     },
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader("X-CSRFToken", csrftoken);
