@@ -198,8 +198,8 @@ def previous_question(request, test_id):
 
 
 def respond(request, test_id):
-    # TODO: Принять count, проверить с тем, что сохранён в БД, если больше, то сохранить
     if is_ajax(request):
+        count = int(request.POST['count'])
         completion = Completion.objects.get(user__username=request.user.username, test=Test.objects.get(pk=test_id))
         test_question_answer = list(
             Answer.objects.filter(related_question=Question.objects.get(question_text=request.POST['question_text']),
@@ -226,15 +226,18 @@ def respond(request, test_id):
                                                            answer__related_question__test=Test.objects.get(pk=test_id))
             if list(stored_user_answer.values_list('is_correct', flat=True)).__contains__(False) and is_correct == True:
                 completion.num_of_correct += 1
+                completion.number_of_last_answered_question = count
                 completion.save()
             elif not list(stored_user_answer.values_list('is_correct', flat=True)).__contains__(False) \
                     and len(list(stored_user_answer.values_list('is_correct', flat=True))) == len(test_question_answer) \
                     and is_correct == False:
                 completion.num_of_correct -= 1
+                completion.number_of_last_answered_question = count
                 completion.save()
             elif len(list(stored_user_answer.values_list('is_correct', flat=True))) != len(test_question_answer) \
                     and is_correct == True:
                 completion.num_of_correct += 1
+                completion.number_of_last_answered_question = count
                 completion.save()
             stored_user_answer.update(is_correct=is_correct)
         else:
@@ -262,7 +265,8 @@ def respond(request, test_id):
 
             if is_correct:
                 completion.num_of_correct += 1
-                completion.save()
+            completion.number_of_last_answered_question = count
+            completion.save()
         return JsonResponse({'is_correct': is_correct})
 
 
