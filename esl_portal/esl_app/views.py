@@ -160,14 +160,19 @@ def profile(request):
 
 
 def start_test(request, test_id):
-    completion = Completion.objects.filter(test_id=test_id, user__username=request.user.username, is_started=True,
-                                        is_completed=False)
+    completions = Completion.objects.filter(test_id=test_id, user__username=request.user.username)
     count = None
     question = None
-    if completion.count() > 0:
-        completion = completion[0]
-        count = completion.number_of_last_answered_question
-        question = Test.objects.get(pk=test_id).questions.order_by('id')[count]
+    if completions.count() > 0:
+        first_completion = completions.first()
+        if first_completion.is_completed:
+            count = 1
+            first_completion.is_completed = False
+            first_completion.save()
+            question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
+        else:
+            count = first_completion.number_of_last_answered_question
+            question = Test.objects.get(pk=test_id).questions.order_by('id')[count]
     else:
         count = 1
         completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True,
