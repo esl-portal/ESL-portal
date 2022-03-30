@@ -163,26 +163,34 @@ def start_test(request, test_id):
     completions = Completion.objects.filter(test_id=test_id, user__username=request.user.username)
     count = None
     question = None
+    is_last = None
+    user_answers = UserAnswer.objects.filter(user=request.user, answer__related_question__test=Test.objects.get(pk=test_id))
     if completions.count() > 0:
         first_completion = completions.first()
-        if first_completion.is_completed:
+        if first_completion.is_completed or user_answers.count() == 0:
+            user_answers.delete()
             count = 1
             first_completion.is_completed = False
-            first_completion.number_of_last_answered_question = count
+            first_completion.number_of_last_answered_question = 0
+            first_completion.num_of_correct = 0
             first_completion.save()
             question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
+            is_last = False
         else:
-            count = first_completion.number_of_last_answered_question
-            question = Test.objects.get(pk=test_id).questions.order_by('id')[count]
+            count = first_completion.number_of_last_answered_question + 1
+            question = Test.objects.get(pk=test_id).questions.order_by('id')[count - 1]
+            # first_completion.number_of_last_answered_question += 1
+            # first_completion.save()
+            is_last = True if Test.objects.get(pk=test_id).questions.count() == count else False
     else:
         count = 1
         completion = Completion(user=request.user, test_id=test_id, is_completed=False, is_started=True,
-                                number_of_last_answered_question=count, num_of_correct=0)
+                                number_of_last_answered_question=0, num_of_correct=0)
         completion.save()
         question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
+        is_last = False
 
     answers = list(Answer.objects.filter(related_question=question).values_list('answer_text'))
-    is_last = True if Test.objects.get(pk=test_id).questions.count() == count else False
     response = {'num_of_question': count, 'question_text': question.question_text, 'type_of_question': question.type,
                 'answers': answers, 'num_of_answers': len(answers), 'is_last': is_last}
     return JsonResponse(response)
