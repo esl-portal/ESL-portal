@@ -32,7 +32,11 @@
                 <h3>{{some_test.level}}</h3>
                 <h3>{{some_test.aspect}}</h3>
                 {% if is_started %}
-                    <button id="resume-button">Продолжить выполнение</button>
+                    {% if is_completed %}
+                        <button id="restart-button">Перепройти</button>
+                    {% else %}
+                        <button id="resume-button">Продолжить выполнение</button>
+                    {% endif %}
                 {% else %}
                     <button id="start-button">Начать выполнение</button>
                 {% endif %}

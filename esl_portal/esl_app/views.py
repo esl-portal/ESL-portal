@@ -130,12 +130,17 @@ def test_list(request):
 @login_required(login_url='/login/')
 def test(request, test_id):
     some_test = get_object_or_404(Test, pk=test_id)
-    completion = Completion.objects.filter(test_id=test_id, user__username=request.user.username, is_started=True,
-                                        is_completed=False)
-    is_started = False
+    completion = Completion.objects.filter(test_id=test_id, user__username=request.user.username)
+    is_started = None
+    is_completed = None
     if completion.count() > 0:
-        is_started = True
-    return render(request, 'esl_app/some_test.html', {'some_test': some_test, 'is_started': is_started})
+        completion = completion.first()
+        is_started = completion.is_started
+        is_completed = completion.is_completed
+    else:
+        is_started = False
+        is_completed = False
+    return render(request, 'esl_app/some_test.html', {'some_test': some_test, 'is_started': is_started, 'is_completed': is_completed})
 
 
 @login_required(login_url='/login/')
