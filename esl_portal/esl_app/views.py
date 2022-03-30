@@ -168,6 +168,7 @@ def start_test(request, test_id):
         if first_completion.is_completed:
             count = 1
             first_completion.is_completed = False
+            first_completion.number_of_last_answered_question = count
             first_completion.save()
             question = Test.objects.get(pk=test_id).questions.order_by('id')[0]
         else:
