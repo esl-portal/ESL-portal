@@ -15,9 +15,9 @@
     <div class="container">
         <div class="header__inner">
             <nav class="nav">
-                <a class="nav__link active" href="#">Все тесты</a>
-                <a class="nav__link active" href="#">Пройденные тесты</a>
-                <a class="nav__link active" href="#">Непройденные тесты</a>
+                <a class="nav__link active" href="{% url 'tests' %}">Все тесты</a>
+                <a class="nav__link active" href="{% url 'tests' %}?finished=1">Пройденные тесты</a>
+                <a class="nav__link active" href="{% url 'tests' %}?finished=0">Непройденные тесты</a>
             </nav>
         </div>
     </div>
