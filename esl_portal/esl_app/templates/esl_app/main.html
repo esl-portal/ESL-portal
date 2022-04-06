@@ -4,12 +4,45 @@
     {% load static %}
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'esl_app/main.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:400,700&amp;subset=cyrillic-ext" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
     <title>Main</title>
 </head>
 <body>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+          <a href="{% url 'main' %}" class="navbar-brand navbar-logo-text d-flex align-items-center col-md-3 mb-2 mb-md-0">
+            ESL PORTAL
+          </a>
 
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+              <li><a href="#" class="nav-link px-2 link-dark">О нас</a></li>
+              <li><a href="#" class="nav-link px-2 link-dark">Контакты</a></li>
+          </ul>
 
+          <div class="col-md-3 text-end">
+            {% if is_authenticated %}
+                <a role="button" class="btn btn-primary" href="{% url 'tests' %}">Тесты</a>
+                <a role="button" class="btn btn-primary" href="{% url 'logout' %}">Выйти</a>
+            {% else %}
+                <a role="button" class="btn btn-outline-primary me-2" href="{% url 'login' %}">Войти</a>
+                <a role="button" class="btn btn-primary" href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
+          </div>
+        </header>
+    </div>
+    <div class="px-4 py-5 my-5 text-center">
+        <img class="d-block mx-auto mb-4" src="{% static 'esl_app/english.png' %}" alt="" width="100" height="100">
+        <h1 class="display-5 fw-bold">Портал по изучению технического английского</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="lead mb-4">Простой в использовании, понятный, невероятно эффективный. Всё это верно для нашего портала. Неважно, кто вы: программист, математик, физик или представитель любой другой технической професии -, у нас вы сможете отточить знания своего английского на любом уровне. Наш богатый функционал, включающий в себя тесты с различными вариантами ответов, ведение отчётов по пройденным тестам и продолжение уже начатого теста, станет отличным дополнением к вашей образовательной траектории</p>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a role="button" class="btn btn-primary btn-outline-light btn-lg px-4 gap-3" href="{% url 'tests' %}">Начать решать</a>
+          </div>
+        </div>
+    </div>
 {#            <nav class="nav">#}
 {#                <a class="nav__link active" href="{% url 'tests' %}">Тесты</a>#}
 {#                {% if is_authenticated %}#}
