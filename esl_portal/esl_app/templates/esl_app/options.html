@@ -10,7 +10,7 @@
 <body>
     {% block content %}
         <h2>Настройка профиля {{user.username}}</h2>
-        <form action="{% url 'profile_options' %}" method="post">
+        <form action="{% url 'options' %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <p>
