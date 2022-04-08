@@ -132,11 +132,12 @@ def test_list(request):
         list_of_tests = get_list_or_404(Test.objects.all())
     else:
         int_finished = int(finished)
+        finished = int_finished
         if int_finished == 1:
             list_of_tests = Test.objects.filter(completion__user=request.user, completion__is_completed=True)
         else:
             list_of_tests = Test.objects.exclude(completion__is_completed=True)
-    return render(request, 'esl_app/tests.html', {'list': list_of_tests, 'is_authenticated': is_authenticated})
+    return render(request, 'esl_app/tests.html', {'list': list_of_tests, 'is_authenticated': is_authenticated, 'finished_param': finished})
 
 
 @login_required(login_url='/login/')

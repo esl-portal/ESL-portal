@@ -4,6 +4,10 @@
     {% load static %}
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'esl_app/tests.css' %}">
+    <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
 </head>
 <body>
@@ -29,15 +33,47 @@
               </div>
             </header>
         </div>
-{#        {% if list %}#}
-{#            <ul>#}
-{#                {% for test in list %}#}
-{#                    <li><a href="/tests/{{test.id}}/">{{test.test_name}}</a></li>#}
-{#                {% endfor %}#}
-{#            </ul>#}
-{#        {% else %}#}
-{#            <p>Нет тестов</p>#}
-{#        {% endif %}#}
-
+        <div class="container">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start ms-2">
+                {% if finished_param is None %}
+                    <a role="button" class="btn btn-primary" href="{% url 'tests' %}">Все тесты</a>
+                    <a role="button" class="btn btn-light btn-outline-primary" href="{% url 'tests' %}?finished=1">Завершенные тесты</a>
+                    <a role="button" class="btn btn-light btn-outline-primary" href="{% url 'tests' %}?finished=0">Непройденные тесты</a>
+                {% elif finished_param == 1 %}
+                    <a role="button" class="btn btn-light btn-outline-primary" href="{% url 'tests' %}">Все тесты</a>
+                    <a role="button" class="btn btn-primary" href="{% url 'tests' %}?finished=1">Завершенные тесты</a>
+                    <a role="button" class="btn btn-light btn-outline-primary" href="{% url 'tests' %}?finished=0">Непройденные тесты</a>
+                {% else %}
+                    <a role="button" class="btn btn-light btn-outline-primary" href="{% url 'tests' %}">Все тесты</a>
+                    <a role="button" class="btn btn-light btn-outline-primary" href="{% url 'tests' %}?finished=1">Завершенные тесты</a>
+                    <a role="button" class="btn btn-primary" href="{% url 'tests' %}?finished=0">Непройденные тесты</a>
+                {% endif %}
+            </div>
+        </div>
+        {% if list %}
+            <div class="album py-5">
+                <div class="container">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        {% for test in list %}
+                            <div class="col card shadow-sm m-3">
+                                <div class="card-body row">
+                                    <div class="align-self-start mb-2">
+                                        <h2 class="card-text">{{ test.test_name }}</h2>
+                                        <p class="card-text">{{ test.test_short_description }}</p>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center align-self-end">
+                                        <a role="button" class="btn btn-sm btn-outline-secondary" href="{% url 'test' test_id=test.id %}">Перейти</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="px-4 py-5 my-5 text-center">
+                <h1 class="display-5 fw-bold">Тестов нет :(</h1>
+            </div>
+        {% endif %}
 </body>
 </html>
