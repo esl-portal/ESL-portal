@@ -127,6 +127,7 @@ def profile_options(request):
 def test_list(request):
     list_of_tests = None
     finished = request.GET.get('finished')
+    is_authenticated = request.user.is_authenticated
     if finished is None:
         list_of_tests = get_list_or_404(Test.objects.all())
     else:
@@ -135,7 +136,7 @@ def test_list(request):
             list_of_tests = Test.objects.filter(completion__user=request.user, completion__is_completed=True)
         else:
             list_of_tests = Test.objects.exclude(completion__is_completed=True)
-    return render(request, 'esl_app/tests.html', {'list': list_of_tests})
+    return render(request, 'esl_app/tests.html', {'list': list_of_tests, 'is_authenticated': is_authenticated})
 
 
 @login_required(login_url='/login/')

@@ -7,6 +7,28 @@
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
 </head>
 <body>
+        <div class="container">
+            <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+              <a href="{% url 'main' %}" class="navbar-brand navbar-logo-text d-flex align-items-center col-md-3 mb-2 mb-md-0">
+                ESL PORTAL
+              </a>
+
+              <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                  <li><a href="#" class="nav-link px-2 link-dark">О нас</a></li>
+                  <li><a href="#" class="nav-link px-2 link-dark">Контакты</a></li>
+              </ul>
+
+              <div class="col-md-3 text-end">
+                {% if is_authenticated %}
+                    <a role="button" class="btn btn-primary" href="{% url 'tests' %}">Тесты</a>
+                    <a role="button" class="btn btn-primary" href="{% url 'logout' %}">Выйти</a>
+                {% else %}
+                    <a role="button" class="btn btn-outline-primary me-2" href="{% url 'login' %}">Войти</a>
+                    <a role="button" class="btn btn-primary" href="{% url 'register' %}">Регистрация</a>
+                {% endif %}
+              </div>
+            </header>
+        </div>
 {#        {% if list %}#}
 {#            <ul>#}
 {#                {% for test in list %}#}
