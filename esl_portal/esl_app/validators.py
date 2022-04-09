@@ -40,3 +40,15 @@ def validate_username(username):
             code='username',
             params={'username': username}
         )
+
+
+def validate_firstname(firstname):
+    firstname_validator = RegexValidator(r'^[a-zA-Z]$')
+    try:
+        firstname_validator(firstname)
+    except ValidationError:
+        raise ValidationError(
+            message=_('Invalid firstname format: %(firstname)s'),
+            code='username',
+            params={'firstname': firstname}
+        )
