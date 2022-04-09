@@ -1,10 +1,11 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email, RegexValidator, validate_slug
+from django.core.validators import RegexValidator, validate_slug, EmailValidator
 
 
-def validate_email_form(email):
+def validate_email(email):
+    email_validator = EmailValidator(message="Некорректный формат email")
     try:
-        validate_email(email)
+        email_validator(email)
         return True
     except ValidationError:
         return False

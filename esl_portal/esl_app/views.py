@@ -84,7 +84,6 @@ def register(request):
             return redirect('/login/')
     else:
         user_form = UserRegistrationForm()
-    print(user_form.errors['email'])
     return render(request, 'esl_app/register.html', {'user_form': user_form})
 
 
