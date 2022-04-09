@@ -11,7 +11,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
   </head>
-  <body>
+  <body class="text-center bg-light">
+     <main class="form-signin">
+          <form method="post" action="{% url 'login' %}" class="needs-validation" novalidate>
+              {% csrf_token %}
+            <a href="{% url 'main' %}"><img class="mb-1" src="{% static 'esl_app/english.png' %}" alt="" width="100" height="100"></a>
+            <h1 class="h3 mb-3 fw-normal">Вход</h1>
+
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="floatingInput {{ form.username.id_for_label }}" placeholder="name@example.com" name="{{ form.username.html_name }}">
+              <label for="floatingInput">{{ form.username.label }}</label>
+            </div>
+            <div class="form-floating">
+              <input type="password" class="form-control" id="floatingPassword {{ form.password.id_for_label }}" placeholder="Password" name="{{ form.password.html_name }}">
+              <label for="floatingPassword">{{ form.password.label }}</label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+            <div class="container mt-3">
+                <a class="text-info" href="{% url 'main' %}">Вернуться на главную</a>
+            </div>
+              {% if wrong_credentials %}
+                <div class="container mt-3">
+                    <p class="text-danger">Неверное имя пользователя и/или пароль</p>
+                </div>
+              {% endif %}
+          </form>
+     </main>
 
 {#<main class="form-signin">#}
 {#  <form method="post" action="{% url 'register' %}">#}

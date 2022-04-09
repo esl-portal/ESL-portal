@@ -1,4 +1,5 @@
 from .models import *
+from .validators import *
 from django import forms
 from django.contrib.auth.models import User
 
@@ -17,7 +18,7 @@ class UserForgotForm(forms.Form):
 class UserRegistrationForm(forms.Form):
     username = forms.CharField(label='Имя пользователя', max_length=150)
     first_name = forms.CharField(label='Ваше имя')
-    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput)
+    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email_form])
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput)
 
