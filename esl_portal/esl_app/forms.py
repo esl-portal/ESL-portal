@@ -2,6 +2,7 @@ from .models import *
 from .validators import *
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 
 class UserLoginForm(forms.Form):
@@ -24,6 +25,54 @@ class UserRegistrationForm(forms.Form):
 
     def unique(self):
         return not User.objects.filter(username=self.cleaned_data['username']).exists()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not validate_email_form(email):
+            raise ValidationError(
+                message=_('Некорректный формал email'),
+                code='email',
+                params={'email': email}
+            )
+        return email
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if not validate_firstname(first_name):
+            raise ValidationError(
+                message=_('Некорректный формат имени'),
+                code='firstname',
+                params={'firstname': first_name}
+            )
+        return first_name
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if not validate_username(username):
+            raise ValidationError(
+                message=_('Некорректный формат никнейма'),
+                code='username',
+                params={'username': username}
+            )
+        return username
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if not validate_password(password):
+            raise ValidationError(
+                message=_('Некорректный формат пароля'),
+                code='password',
+            )
+        return password
+
+    def clean_password2(self):
+        password2 = self.cleaned_data.get('password2')
+        if not (password2 == self.cleaned_data.get('password')):
+            raise ValidationError(
+                message=_('Пароли не совпадают'),
+                code='password',
+            )
+        return password2
 
 
 class UserChangeData(forms.Form):

@@ -1,54 +1,38 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email, RegexValidator, validate_slug
-from django.utils.translation import gettext_lazy as _
 
 
 def validate_email_form(email):
     try:
         validate_email(email)
+        return True
     except ValidationError:
-        raise ValidationError(
-            message=_('Invalid email: %(value)s'),
-            code='email',
-            params={'email': email}
-        )
+        return False
 
 
 def validate_password(password):
     password_validator = RegexValidator(regex=r'^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$')
     try:
         password_validator(password)
+        return True
     except ValidationError:
-        raise ValidationError(
-            message=_('Invalid password format'),
-            code='password',
-        )
+        return False
 
 
 def validate_username(username):
     if len(username) < 3:
-        raise ValidationError(
-            message=_('Invalid username format: %(username)s'),
-            code='username',
-            params={'username': username}
-        )
+        return False
     try:
         validate_slug(username)
+        return True
     except ValidationError:
-        raise ValidationError(
-            message=_('Invalid username format: %(username)s'),
-            code='username',
-            params={'username': username}
-        )
+        return False
 
 
 def validate_firstname(firstname):
     firstname_validator = RegexValidator(r'^[a-zA-Z]$')
     try:
         firstname_validator(firstname)
+        return True
     except ValidationError:
-        raise ValidationError(
-            message=_('Invalid firstname format: %(firstname)s'),
-            code='username',
-            params={'firstname': firstname}
-        )
+        return False
