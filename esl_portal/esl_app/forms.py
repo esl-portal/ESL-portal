@@ -17,7 +17,7 @@ class UserForgotForm(forms.Form):
 
 class UserRegistrationForm(forms.Form):
     username = forms.CharField(label='Имя пользователя', max_length=150, validators=[validate_username])
-    first_name = forms.CharField(label='Ваше имя')
+    first_name = forms.CharField(label='Ваше имя', validators=[validate_firstname])
     email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email_form])
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput, validators=[validate_password])
     password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput)
@@ -28,6 +28,6 @@ class UserRegistrationForm(forms.Form):
 
 class UserChangeData(forms.Form):
     new_username = forms.CharField(label='Имя пользователя', max_length=50, validators=[validate_username])
-    new_first_name = forms.CharField(label='Ваше имя')
+    new_first_name = forms.CharField(label='Ваше имя', validators=[validate_firstname])
     new_email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email_form])
     new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False, validators=[validate_password])
