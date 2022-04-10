@@ -10,34 +10,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
   </head>
-  <body>
-
-{#<main class="form-signin">#}
-{#  <form method="post" action="{% url 'forgot' %}">#}
-{#    {% csrf_token %}#}
-{#    <h1 class="h3 mb-3 fw-normal">Восстановление пароля</h1>#}
-{##}
-{#    <div class="form-floating">#}
-{#      <input type="user_name" class="form-control" id="floatingInput {{ form.username.id_for_label }}" placeholder="user_name" name="{{ form.username.html_name }}">#}
-{#      <label for="floatingPassword">{{ form.username.label }}</label>#}
-{#    </div>#}
-{##}
-{#    <div class="form-floating">#}
-{#      <input type="password" class="form-control" id="floatingPassword {{ form.password.id_for_label }}" placeholder="Password" name="{{ form.password.html_name }}">#}
-{#      <label for="floatingPassword">{{ form.password.label }}</label>#}
-{#    </div>#}
-{#    <div class="form-floating">#}
-{#      <input type="password" class="form-control" id="floatingPassword {{ form.password_confirmation.id_for_label }}" placeholder="Password" name="{{ form.password_confirmation.html_name }}">#}
-{#      <label for="floatingPassword">{{ form.password_confirmation.label }}</label>#}
-{#    </div>#}
-{##}
-{##}
-{#    <div class="checkbox mb-3">#}
-{##}
-{#    </div>#}
-{#    <button class="w-100 btn btn-lg btn-primary" type="submit" value="Submit">Восстановить</button>#}
-{##}
-{#  </form>#}
-{#</main>#}
+  <body class="text-center bg-light">
+    <main class="form-signin">
+          <form method="post" action="{% url 'forgot' %}" class="needs-validation" novalidate>
+              {% csrf_token %}
+            <a href="{% url 'main' %}"><img class="mb-1" src="{% static 'esl_app/english.png' %}" alt="" width="100" height="100"></a>
+            <h1 class="h3 mb-3 fw-normal">Восстановление пароля</h1>
+          <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="floatingPassword {{ form.username.id_for_label }}" placeholder="Password" name="{{ form.username.html_name }}">
+              <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                {% if wrong_credentials %}
+                    <p class="fs-6 text-danger">Пользователя с таким никнеймом не существует</p>
+                {% endif %}
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                        <p class="fs-6 text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-floating mb-2">
+              <input type="password" class="form-control" id="floatingPassword {{ form.password.id_for_label }}" placeholder="Password" name="{{ form.password.html_name }}">
+              <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <p class="fs-6 text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+          <div class="form-floating mb-2">
+              <input type="password" class="form-control" id="floatingPassword {{ form.password_confirmation.id_for_label }}" placeholder="Password" name="{{ form.password_confirmation.html_name }}">
+              <label for="{{ form.password_confirmation.id_for_label }}">{{ form.password_confirmation.label }}</label>
+                {% if form.password_confirmation.errors %}
+                    {% for error in form.password_confirmation.errors %}
+                        <p class="fs-6 text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Сменить пароль</button>
+            <div class="container mt-3">
+                <a class="text-info" href="{% url 'main' %}">Вернуться на главную</a>
+            </div>
+          </form>
+     </main>
   </body>
 </html>

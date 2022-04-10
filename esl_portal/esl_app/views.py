@@ -42,17 +42,15 @@ def login_forgot(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        password_confirmation = request.POST['password_confirmation']
+        form = UserForgotForm(request.POST)
         if User.objects.filter(username=username).count() != 0:
             user = User.objects.get(username=username)
-            if password == password_confirmation:
+            if form.is_valid():
                 user.set_password(password)
                 user.save()
                 return redirect(to='/login/')
             else:
-                form = UserForgotForm(request.POST)
-                return render(request, 'esl_app/forgot.html', {'wrong_credentials': True,
-                                                               'form': form})
+                return render(request, 'esl_app/forgot.html', {'form': form})
         else:
             form = UserForgotForm(request.POST)
             return render(request, 'esl_app/forgot.html', {'wrong_credentials': True,
