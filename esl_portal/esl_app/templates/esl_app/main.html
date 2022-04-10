@@ -24,6 +24,7 @@
 
           <div class="col-md-3 text-end">
             {% if is_authenticated %}
+                <a role="button" class="btn btn-primary" href="{% url 'profile' %}">Профиль</a>
                 <a role="button" class="btn btn-primary" href="{% url 'tests' %}">Тесты</a>
                 <a role="button" class="btn btn-primary" href="{% url 'logout' %}">Выйти</a>
             {% else %}
