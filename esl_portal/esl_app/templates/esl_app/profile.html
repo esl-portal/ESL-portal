@@ -1,5 +1,24 @@
-{# TODO: write profile template #}
-<h1>Profile</h1>
-<h2>{{ user.username }}</h2>
-<a href="{% url 'completed' %}">Пройденные тесты</a>
-<a href="{% url 'options' %}">Настройки</a>
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'esl_app/profile.css' %}">
+        <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
+        <title>Профиль</title>
+    </head>
+    <body class="bg-light text-center">
+        <main class="profile">
+            <img src="{% static 'esl_app/userpic.png' %}" class="rounded mb-1" width="200" height="200">
+            <h2>{{ user.username }}</h2>
+            <div class="d-grid gap-2">
+                <a role="button" class="btn btn-primary mb-2" href="{% url 'completed' %}">Пройденные тесты</a>
+                <a role="button" class="btn btn-outline-primary mb-2" href="{% url 'options' %}">Изменить данные</a>
+                <a role="button" class="btn btn-link" href="{% url 'main' %}">Вернуться на главную</a>
+            </div>
+        </main>
+    </body>
+</html>
