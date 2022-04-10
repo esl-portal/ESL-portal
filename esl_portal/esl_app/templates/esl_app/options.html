@@ -15,6 +15,11 @@
     <main class="form-change">
         <form method="post" action="{% url 'options' %}" class="needs-validation" novalidate>
               {% csrf_token %}
+        {% if everything_empty is not None and not everything_empty %}
+            <div class="alert alert-success" role="alert">
+                Данные были успешно изменены
+            </div>
+        {% endif %}
             <img class="mb-1 rounded" src="{% static 'esl_app/userpic.png' %}" alt="" width="200" height="200">
             <h2 class="h3 mb-3 fw-normal">{{ user.username }}</h2>
 

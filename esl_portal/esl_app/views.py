@@ -112,7 +112,8 @@ def profile_options(request):
             if request.POST['new_password'] != '':
                 user.set_password(request.POST['new_password'])
             user.save()
-            return redirect('/profile/')
+            everything_empty = new_username == '' and new_email == '' and new_first_name == '' and request.POST['new_password'] == ''
+            return render(request, 'esl_app/options.html', {'user': request.user, 'form': form, 'everything_empty': everything_empty})
     else:
         data = {'new_username': user.username,
                 'new_first_name': user.first_name,
