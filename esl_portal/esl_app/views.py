@@ -74,7 +74,7 @@ def register(request):
         return redirect('/main/')
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid() and (request.POST['password'] == request.POST['password2']) and user_form.unique():
+        if user_form.is_valid() and user_form.unique():
             new_user = User.objects.create_user(username=request.POST['username'],
                             first_name=request.POST['first_name'],
                             email=request.POST['email'],

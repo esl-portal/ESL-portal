@@ -31,7 +31,7 @@ def validate_username(username):
 
 
 def validate_firstname(firstname):
-    firstname_validator = RegexValidator(r'^[a-zA-Z]$')
+    firstname_validator = RegexValidator(r'^[a-zA-Z]+$')
     try:
         firstname_validator(firstname)
         return True
