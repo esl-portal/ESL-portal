@@ -6,22 +6,22 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(label='Введите имя пользователя', max_length=150, validators=[validate_username])
-    password = forms.CharField(label='Введите пароль', widget=forms.PasswordInput, validators=[validate_password])
+    username = forms.CharField(label='Введите имя пользователя', max_length=150, validators=[validate_username], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    password = forms.CharField(label='Введите пароль', widget=forms.PasswordInput, validators=[validate_password], error_messages={'required': 'Данное поле является обязательным для заполнения'})
 
 
 class UserForgotForm(forms.Form):
-    username = forms.CharField(label="Введите имя пользователя", max_length=150, validators=[validate_username])
-    password = forms.CharField(label="Введите новый пароль", widget=forms.PasswordInput, validators=[validate_password])
-    password_confirmation = forms.CharField(label="Введите новый пароль ещё раз", widget=forms.PasswordInput)
+    username = forms.CharField(label="Введите имя пользователя", max_length=150, validators=[validate_username], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    password = forms.CharField(label="Введите новый пароль", widget=forms.PasswordInput, validators=[validate_password], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    password_confirmation = forms.CharField(label="Введите новый пароль ещё раз", widget=forms.PasswordInput, error_messages={'required': 'Данное поле является обязательным для заполнения'})
 
 
 class UserRegistrationForm(forms.Form):
-    username = forms.CharField(label='Имя пользователя', max_length=150, validators=[validate_username])
-    first_name = forms.CharField(label='Ваше имя', validators=[validate_firstname])
-    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email])
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput, validators=[validate_password])
-    password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput)
+    username = forms.CharField(label='Имя пользователя', max_length=150, validators=[validate_username], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    first_name = forms.CharField(label='Ваше имя', validators=[validate_firstname], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput, validators=[validate_password], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput, error_messages={'required': 'Данное поле является обязательным для заполнения'})
 
     def unique(self):
         return not User.objects.filter(username=self.cleaned_data['username']).exists()
