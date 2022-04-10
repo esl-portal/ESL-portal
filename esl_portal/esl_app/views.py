@@ -90,8 +90,10 @@ def profile_completed(request):
     user = request.user
     completions = Completion.objects.filter(user=user, is_completed=True)
     is_empty = len(completions) == 0
+    is_authenticated = request.user.is_authenticated
     return render(request, 'esl_app/completed.html', {'completions': completions,
-                                                      'is_empty': is_empty})
+                                                      'is_empty': is_empty,
+                                                      'is_authenticated': is_authenticated})
 
 
 @login_required(login_url='/login/')

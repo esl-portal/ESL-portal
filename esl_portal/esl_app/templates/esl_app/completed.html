@@ -4,10 +4,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Пройденные тесты</title>
+        {% load static %}
+    <link rel="stylesheet" href="{% static 'esl_app/completed.css' %}">
+    <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
 </head>
 <body>
-    {% if is_empty %}
+<div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+      <a href="{% url 'main' %}" class="navbar-brand navbar-logo-text d-flex align-items-center col-md-3 mb-2 mb-md-0">
+        ESL PORTAL
+      </a>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+          <li><a href="#" class="nav-link px-2 link-dark">О нас</a></li>
+          <li><a href="#" class="nav-link px-2 link-dark">Контакты</a></li>
+      </ul>
+
+      <div class="col-md-3 text-end">
+        {% if is_authenticated %}
+            <a role="button" class="btn btn-primary" href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+            <a role="button" class="btn btn-outline-primary me-2" href="{% url 'login' %}">Войти</a>
+            <a role="button" class="btn btn-primary" href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+      </div>
+    </header>
+</div>
+<div class="container">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-start ms-2">
+        <a role="button" class="btn btn-light" href="{% url 'profile' %}">Назад</a>
+        {% if completions %}
+            <a role="button" class="btn btn-primary btn-outline-light" href="{% url 'tests' %}">Тесты</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container">
+    {% if completions %}
+        {% for completion in completions %}
+            <div class="row border rounded mx-5 my-3 completion align-self-center shadow-sm">
+                <div class="col-10">
+                    <h2 class="mt-1">{{ completion.test.test_name }}</h2>
+                    <h3>{{ completion.num_of_correct }} из {{ completion.test.questions.count }}</h3>
+                </div>
+                <div class="col-2 text-center align-items-center">
+                    <a role="button" class="btn btn-dark btn-outline-light mt-4 restart-button" href="{% url 'test' test_id=completion.test_id %}">Перепройти</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="px-4 py-5 my-5 text-center">
+            <h1 class="display-5 fw-bold">Пройденных тестов нет :( <a href="{% url 'tests' %}">Пройти сейчас</a></h1>
+        </div>
+    {% endif %}
+</div>
+{% comment %}    {% if is_empty %}
         <p>Вы еще не прошли ни одного теста! <a href={% url 'tests' %}>Пройти</a></p>
     {% else %}
         {% for completion in completions %}
@@ -15,6 +70,6 @@
             <p>{{ completion.num_of_correct }} / {{ completion.test.questions.count }}</p>
             <a href={% url 'test' completion.test.id %}>Перепройти</a>
         {% endfor %}
-    {% endif %}
+    {% endif %}{% endcomment %}
 </body>
 </html>
