@@ -1,11 +1,70 @@
-<p>Ваш результат: {{ completion.num_of_correct }} / {{ amount_of_questions }}</p>
-{% for user_answer in user_answers %}
-    <p>Вопрос: {{ user_answer.answer.related_question.question_text }}</p>
-    {% if user_answer.is_correct %}
-        <p>Ваш ответ: {{ user_answer.answer_text }} - верно</p>
-    {% else %}
-        <p>Ваш ответ: {{ user_answer.answer_text }} - неверно</p>
-    {% endif %}
-    <br>
-{% endfor %}
+<!DOCTYPE html>
+<html>
+<head>
+        {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'esl_app/result.css' %}">
+    <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
+    <title>Результат теста</title>
+</head>
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+          <a href="{% url 'main' %}" class="navbar-brand navbar-logo-text d-flex align-items-center col-md-3 mb-2 mb-md-0">
+            ESL PORTAL
+          </a>
 
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+              <li><a href="#" class="nav-link px-2 link-dark">О нас</a></li>
+              <li><a href="#" class="nav-link px-2 link-dark">Контакты</a></li>
+          </ul>
+
+          <div class="col-md-3 text-end">
+            <a role="button" class="btn btn-primary" href="{% url 'profile' %}">Профиль</a>
+            <a role="button" class="btn btn-primary" href="{% url 'tests' %}">Тесты</a>
+            <a role="button" class="btn btn-primary" href="{% url 'logout' %}">Выйти</a>
+          </div>
+        </header>
+    </div>
+    <div class="px-4 py-5 my-4 text-center">
+        <h1 class="display-5 fw-bold">{{ completion.test.test_name }}</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="lead mb-4">Ваш результат: {{ completion.num_of_correct }} из {{ completion.test.questions.count }}</p>
+        </div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Вопрос</th>
+                    <th scope="col">Ваш ответ</th>
+                    <th scope="col">Результат</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_answer in user_answers %}
+                    {% if user_answer.is_correct %}
+                        <tr class="table-success">
+                            <th scope="row">{{ user_answer.answer.related_question.question_text }}</th>
+                            <td>{{ user_answer.answer_text }}</td>
+                            <td class="text-success">Верно</td>
+                        </tr>
+                    {% else %}
+                        <tr class="table-danger">
+                            <th scope="row">{{ user_answer.answer.related_question.question_text }}</th>
+                            <td>{{ user_answer.answer_text }}</td>
+                            <td class="text-danger">Неверно</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a role="button" class="btn btn-primary" href="{% url 'test' test_id=completion.test_id %}">Перепройти</a>
+    </div>
+</body>
+</html>
