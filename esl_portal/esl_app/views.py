@@ -233,6 +233,11 @@ def previous_question(request, test_id):
 def respond(request, test_id):
     if is_ajax(request):
         count = int(request.POST['count'])
+        is_last = request.POST['is_last']
+        if is_last == 'false':
+            is_last = False
+        else:
+            is_last = True
         completion = Completion.objects.get(user__username=request.user.username, test=Test.objects.get(pk=test_id))
         test_question_answer = list(
             Answer.objects.filter(related_question=Question.objects.get(question_text=request.POST['question_text']),
@@ -300,7 +305,8 @@ def respond(request, test_id):
                 completion.num_of_correct += 1
             completion.number_of_last_answered_question = count
             completion.save()
-        return JsonResponse({'is_correct': is_correct})
+        print(is_last)
+        return JsonResponse({'is_correct': is_correct, 'is_last': is_last})
 
 
 def finish_test(request, test_id):

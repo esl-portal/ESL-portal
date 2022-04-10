@@ -1,0 +1,14 @@
+html, body {
+    height: 100%;
+}
+
+.navbar-logo-text {
+    font-family: 'Rubik Bubbles', cursive;
+}
+
+#completion {
+    display: flex;
+    height: 70%;
+    width: 40%;
+    flex-flow: column;
+}
