@@ -94,10 +94,10 @@ class UserRegistrationForm(forms.Form):
 
 
 class UserChangeData(forms.Form):
-    new_username = forms.CharField(label='Имя пользователя', max_length=50, validators=[validate_username])
-    new_first_name = forms.CharField(label='Ваше имя', validators=[validate_firstname])
-    new_email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email])
-    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False, validators=[validate_password])
+    new_username = forms.CharField(label='Новое имя пользователя', max_length=50, validators=[validate_username], error_messages={'required': ''})
+    new_first_name = forms.CharField(label='Ваше новое имя', validators=[validate_firstname], error_messages={'required': ''})
+    new_email = forms.EmailField(label='Новый адрес электронной почты', widget=forms.EmailInput, validators=[validate_email], error_messages={'required': '', 'invalid': 'Некорректный формат адреса электронной почты'})
+    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False, validators=[validate_password], error_messages={'required': ''})
 
     def clean_new_email(self):
         email = self.cleaned_data.get('new_email')

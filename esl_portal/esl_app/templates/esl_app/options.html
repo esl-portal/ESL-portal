@@ -1,23 +1,68 @@
-{# TODO: Write options html #}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Настройки</title>
+      {% load static %}
+    <link rel="stylesheet" href="{% static 'esl_app/options.css' %}">
+    <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Montserrat:300i,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
 </head>
+<body class="text-center bg-light">
+    <main class="form-change">
+        <form method="post" action="{% url 'options' %}" class="needs-validation" novalidate>
+              {% csrf_token %}
+            <img class="mb-1 rounded" src="{% static 'esl_app/userpic.png' %}" alt="" width="200" height="200">
+            <h2 class="h3 mb-3 fw-normal">{{ user.username }}</h2>
 
-<body>
-    {% block content %}
-        <h2>Настройка профиля {{user.username}}</h2>
-        <form action="{% url 'options' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <p>
-                <input type="submit" value="Применить">
-            </p>
-        </form>
-    {% endblock %}
+            <div class="form-floating mb-2">
+              <input type="email" class="form-control" id="floatingInput {{ form.new_email.id_for_label }}" placeholder="name@example.com" name="{{ form.new_email.html_name }}">
+              <label for="{{ form.new_email.id_for_label }}">{{ form.new_email.label }}</label>
+                {% if form.new_email.errors %}
+                    {% for error in form.new_email.errors %}
+                        <p class="fs-6 text-danger mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+          <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="floatingInput {{ form.new_username.id_for_label }}" placeholder="Password" name="{{ form.new_username.html_name }}">
+              <label for="{{ form.new_username.id_for_label }}">{{ form.new_username.label }}</label>
+                {% if form.new_username.errors %}
+                    {% for error in form.new_username.errors %}
+                        <p class="fs-6 text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+          <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="floatingInput {{ form.new_first_name.id_for_label }}" placeholder="Password" name="{{ form.new_first_name.html_name }}">
+              <label for="{{ form.new_first_name.id_for_label }}">{{ form.new_first_name.label }}</label>
+                {% if form.new_first_name.errors %}
+                    {% for error in form.new_first_name.errors %}
+                        <p class="fs-6 text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-floating mb-2">
+              <input type="password" class="form-control" id="floatingPassword {{ form.new_password.id_for_label }}" placeholder="new_password" name="{{ form.new_password.html_name }}">
+              <label for="{{ form.new_password.id_for_label }}">{{ form.new_password.label }}</label>
+                {% if form.new_password.errors %}
+                    {% for error in form.new_password.errors %}
+                        <p class="fs-6 text-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+          <div class="form-text mb-2">
+                    Пароль должен содержать: буквы латинского алфавита, цифры и спецсимволы
+          </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Обновить данные</button>
+            <div class="container mt-3">
+                <a class="text-info" href="{% url 'profile' %}">Вернуться к профилю</a>
+            </div>
+          </form>
+    </main>
 </body>
 
 </html>
