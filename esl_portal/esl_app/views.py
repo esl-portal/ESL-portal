@@ -103,11 +103,11 @@ def profile_options(request):
             new_username = request.POST['new_username']
             new_email = request.POST['new_email']
             new_first_name = request.POST['new_first_name']
-            if user.username != new_username:
+            if user.username != new_username and new_username != '' and new_username is not None:
                 user.username = new_username
-            if user.email != new_email:
+            if user.email != new_email and new_email != '' and new_email is not None:
                 user.email = new_email
-            if user.first_name != new_first_name:
+            if user.first_name != new_first_name and new_first_name != '' and new_first_name is not None:
                 user.first_name = new_first_name
             if request.POST['new_password'] != '':
                 user.set_password(request.POST['new_password'])

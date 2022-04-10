@@ -101,7 +101,7 @@ class UserChangeData(forms.Form):
 
     def clean_new_email(self):
         email = self.cleaned_data.get('new_email')
-        if not validate_email(email):
+        if email != '' and email is not None and not validate_email(email):
             raise ValidationError(
                 message=_('Некорректный формат email'),
                 code='email',
@@ -111,7 +111,7 @@ class UserChangeData(forms.Form):
 
     def clean_new_first_name(self):
         first_name = self.cleaned_data.get('new_first_name')
-        if not validate_firstname(first_name):
+        if first_name != '' and first_name is not None and not validate_firstname(first_name):
             raise ValidationError(
                 message=_('Некорректный формат имени'),
                 code='firstname',
@@ -121,7 +121,7 @@ class UserChangeData(forms.Form):
 
     def clean_new_username(self):
         username = self.cleaned_data.get('new_username')
-        if not validate_username(username):
+        if username != '' and username is not None and not validate_username(username):
             raise ValidationError(
                 message=_('Некорректный формат никнейма'),
                 code='username',
@@ -131,7 +131,7 @@ class UserChangeData(forms.Form):
 
     def clean_new_password(self):
         password = self.cleaned_data.get('new_password')
-        if not validate_password(password):
+        if password != '' and password is not None and not validate_password(password):
             raise ValidationError(
                 message=_('Некорректный формат пароля'),
                 code='password',
