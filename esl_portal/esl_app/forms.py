@@ -19,7 +19,7 @@ class UserForgotForm(forms.Form):
 class UserRegistrationForm(forms.Form):
     username = forms.CharField(label='Имя пользователя', max_length=150, validators=[validate_username], error_messages={'required': 'Данное поле является обязательным для заполнения'})
     first_name = forms.CharField(label='Ваше имя', validators=[validate_firstname], error_messages={'required': 'Данное поле является обязательным для заполнения'})
-    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email], error_messages={'required': 'Данное поле является обязательным для заполнения'})
+    email = forms.EmailField(label='Адрес электронной почты', widget=forms.EmailInput, validators=[validate_email], error_messages={'required': 'Данное поле является обязательным для заполнения', 'invalid': 'Некорректный формат адреса электронной почты'})
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput, validators=[validate_password], error_messages={'required': 'Данное поле является обязательным для заполнения'})
     password2 = forms.CharField(label='Введите пароль ещё раз', widget=forms.PasswordInput, error_messages={'required': 'Данное поле является обязательным для заполнения'})
 
