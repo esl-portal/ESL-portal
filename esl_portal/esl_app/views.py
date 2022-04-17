@@ -306,7 +306,7 @@ def respond(request, test_id):
             completion.number_of_last_answered_question = count
             completion.save()
         print(is_last)
-        return JsonResponse({'is_correct': is_correct, 'is_last': is_last})
+        return JsonResponse({'is_correct': is_correct, 'is_last': is_last, 'num_of_question': count})
 
 
 def finish_test(request, test_id):

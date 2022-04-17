@@ -116,20 +116,8 @@
                         $('#test-info').hide();
                         $('#completion').append();
                         let form = `<form method="post" class="question-form border border-1 rounded shadow-sm" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text" class="ms-4 mt-2 mb-2">` + data.question_text + `</h3>` + choices + `<div class="row"><div class="col-4 align-content-start"><input class="btn btn-primary ms-4" onclick="respond()" id="respond-btn" type="button" value="Ответить"></div>`;
-                        let next_btn = ``;
-                        if (data.is_last) {
-                            next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()" disabled="">`;
-                        }
-                        else {
-                            next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()">`;
-                        }
-                        let prev_btn = ``;
-                        if (data.num_of_question === 1) {
-                            prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" disabled=""></div></div>`;
-                        }
-                        else {
-                            prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()"></div></div>`;
-                        }
+                        let next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()" disabled="">`;
+                        let prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" disabled=""></div></div>`;
                         let finish_btn = `<div class="d-grid gap-2 mt-2"><input data-is-last="` + data.is_last + `" class="btn btn-light btn-outline-danger" type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" disabled=""></div></form>`;
 
                         form = form + next_btn + prev_btn + finish_btn;
@@ -173,8 +161,12 @@
                             $('#completion').prepend(congrats_message);
                             $('input.answer').prop('disabled', true);
                             $('#respond-btn').prop('disabled', true);
-                            $('#next-btn').show();
-                            $('#prev-btn').show();
+                            if (!data.is_last) {
+                                $('#next-btn').prop('disabled', false);
+                            }
+                            if (data.num_of_question !== 1) {
+                                $('#prev-btn').prop('disabled', false);
+                            }
                             $('#finish-btn').show();
                         }
                         else {
@@ -182,8 +174,12 @@
                             $('#completion').prepend(error_message);
                             $('input.answer').prop('disabled', true);
                             $('#respond-btn').prop('disabled', true);
-                            $('#next-btn').show();
-                            $('#prev-btn').show();
+                            if (!data.is_last) {
+                                $('#next-btn').prop('disabled', false);
+                            }
+                            if (data.num_of_question !== 1) {
+                                $('#prev-btn').prop('disabled', false);
+                            }
                             $('#finish-btn').show();
                         }
                         if (data.is_last) {
@@ -223,20 +219,8 @@
                         $('#completion').empty();
                         $('#completion').append();
                         let form = `<form method="post" class="question-form border border-1 rounded shadow-sm" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text" class="ms-4 mt-2 mb-2">` + data.question_text + `</h3>` + choices + `<div class="row"><div class="col-4 align-content-start"><input class="btn btn-primary ms-4" onclick="respond()" id="respond-btn" type="button" value="Ответить"></div>`;
-                        let next_btn = ``;
-                        if (data.is_last) {
-                            next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()" disabled="">`;
-                        }
-                        else {
-                            next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()">`;
-                        }
-                        let prev_btn = ``;
-                        if (data.num_of_question === 1) {
-                            prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" disabled=""></div></div>`;
-                        }
-                        else {
-                            prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()"></div></div>`;
-                        }
+                        let next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()" disabled="">`;
+                        let prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" disabled=""></div></div>`;
                         let finish_btn = `<div class="d-grid gap-2 mt-2"><input data-is-last="` + data.is_last + `" class="btn btn-light btn-outline-danger" type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" disabled=""></div></form>`;
                         form = form + next_btn + prev_btn + finish_btn;
                         $('#completion').append(form);
@@ -271,20 +255,8 @@
                         $('#completion').empty();
                         $('#completion').append();
                         let form = `<form method="post" class="question-form border border-1 rounded shadow-sm" data-amount="` + data.num_of_answers + `" data-count="` + data.num_of_question + `">{% csrf_token %}<h3 id="question_text" class="ms-4 mt-2 mb-2">` + data.question_text + `</h3>` + choices + `<div class="row"><div class="col-4 align-content-start"><input class="btn btn-primary ms-4" onclick="respond()" id="respond-btn" type="button" value="Ответить"></div>`;
-                        let next_btn = ``;
-                        if (data.is_last) {
-                            next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()" disabled="">`;
-                        }
-                        else {
-                            next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()">`;
-                        }
-                        let prev_btn = ``;
-                        if (data.num_of_question === 1) {
-                            prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" disabled=""></div></div>`;
-                        }
-                        else {
-                            prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()"></div></div>`;
-                        }
+                        let next_btn = `<div class="col-8 d-grid gap-2 d-md-flex justify-content-md-end"><input class="btn btn-primary mb-2" type="button" value="Следующий вопрос" id="next-btn" onclick="next()" disabled="">`;
+                        let prev_btn = `<input class="btn btn-primary mb-2 me-2" type="button" value="Предыдущий вопрос" id="prev-btn" onclick="prev()" disabled=""></div></div>`;
                         let finish_btn = `<div class="d-grid gap-2 mt-2"><input data-is-last="` + data.is_last + `" class="btn btn-light btn-outline-danger" type="button" value="Завершить тестирование" id="finish-btn" onclick="finish()" disabled=""></div></form>`;
                         form = form + next_btn + prev_btn + finish_btn;
                         $('#completion').append(form);
