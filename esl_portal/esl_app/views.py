@@ -162,10 +162,15 @@ def test_result(request, test_id):
     completion = Completion.objects.get(user__username=request.user.username, test_id=test_id)
     user_answers = list(UserAnswer.objects.filter(user__username=request.user.username,
                                                   answer__related_question__test=Test.objects.get(pk=test_id)))
+    correct_answers_set = list(Answer.objects.filter(is_correct=True, related_question__test=Test.objects.get(pk=test_id)))
+    correct_answers = {}
+    for correct_answer in correct_answers_set:
+        correct_answers[correct_answer.related_question.question_text] = correct_answer.answer_text
     return render(request, 'esl_app/result.html', {'completion': completion,
                                                    'amount_of_questions':
                                                        Test.objects.get(pk=test_id).questions.count(),
-                                                   'user_answers': user_answers})
+                                                   'user_answers': user_answers,
+                                                   'correct_answers': correct_answers})
 
 
 @login_required(login_url='/login/')

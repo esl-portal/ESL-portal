@@ -41,7 +41,7 @@
                 <tr>
                     <th scope="col">Вопрос</th>
                     <th scope="col">Ваш ответ</th>
-                    <th scope="col">Результат</th>
+                    <th scope="col">Верный ответ</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,13 +50,21 @@
                         <tr class="table-success">
                             <th scope="row">{{ user_answer.answer.related_question.question_text }}</th>
                             <td>{{ user_answer.answer_text }}</td>
-                            <td class="text-success">Верно</td>
+                            {% for key, value in correct_answers.items %}
+                                {% if key == user_answer.answer.related_question.question_text %}
+                                    <td class="text-success">{{ value }}</td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                     {% else %}
                         <tr class="table-danger">
                             <th scope="row">{{ user_answer.answer.related_question.question_text }}</th>
                             <td>{{ user_answer.answer_text }}</td>
-                            <td class="text-danger">Неверно</td>
+                            {% for key, value in correct_answers.items %}
+                                {% if key == user_answer.answer.related_question.question_text %}
+                                    <td class="text-danger">{{ value }}</td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                     {% endif %}
                 {% endfor %}
