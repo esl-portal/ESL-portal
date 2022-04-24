@@ -320,3 +320,13 @@ def finish_test(request, test_id):
     completion.save()
     response = {'redirect_url': 'result/'}
     return JsonResponse(response)
+
+
+def about(request):
+    is_authenticated = request.user.is_authenticated
+    return render(request, 'esl_app/about.html', {'is_authenticated': is_authenticated})
+
+
+def contacts(request):
+    is_authenticated = request.user.is_authenticated
+    return render(request, 'esl_app/contacts.html', {'is_authenticated': is_authenticated})

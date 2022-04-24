@@ -3,12 +3,12 @@
 <head>
     {% load static %}
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'esl_app/main.css' %}">
+    <link rel="stylesheet" href="{% static 'esl_app/about.css' %}">
     <link rel="stylesheet" href="{% static 'esl_app/bootstrap.min.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
-    <title>Main</title>
+    <title>О нас</title>
 </head>
 <body>
     <div class="container">
@@ -35,13 +35,10 @@
         </header>
     </div>
     <div class="px-4 py-5 my-5 text-center">
-        <img class="d-block mx-auto mb-4" src="{% static 'esl_app/english.png' %}" alt="" width="100" height="100">
-        <h1 class="display-5 fw-bold">Портал по изучению технического английского</h1>
+        <h1 class="display-5 fw-bold">О нас</h1>
         <div class="col-lg-6 mx-auto">
-          <p class="lead mb-4">Простой в использовании, понятный, невероятно эффективный. Всё это верно для нашего портала. Неважно, кто вы: программист, математик, физик или представитель любой другой технической професии -, у нас вы сможете отточить знания своего английского на любом уровне. Наш богатый функционал, включающий в себя тесты с различными вариантами ответов, ведение отчётов по пройденным тестам и продолжение уже начатого теста, станет отличным дополнением к вашей образовательной траектории</p>
-          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a role="button" class="btn btn-primary btn-outline-light btn-lg px-4 gap-3" href="{% url 'tests' %}">Начать решать</a>
-          </div>
+          <p class="lead mb-4">Команда ESL Portal - группа профессионалов в сфере информационных технологий с многолетним опытом работы. Большая часть сотрудников посвятила себя веб-разработке и работе в сфере образования - что помогает нам делать сервис лучше каждый день. Наши главные ценности: стремление к знаниям, добросовестность и открытость к диалогу</p>
+            <img class="col-lg-10" src="{% static 'esl_app/about.jpg' %}">
         </div>
     </div>
 </body>

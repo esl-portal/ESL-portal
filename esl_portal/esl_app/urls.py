@@ -18,5 +18,7 @@ urlpatterns = [
     path('tests/<int:test_id>/ajax/next/', views.next_question, name='next_question'),
     path('tests/<int:test_id>/ajax/previous/', views.previous_question, name='previous_question'),
     path('tests/<int:test_id>/ajax/respond/', views.respond, name='respond'),
-    path('tests/<int:test_id>/ajax/finish/', views.finish_test, name='finish_test')
+    path('tests/<int:test_id>/ajax/finish/', views.finish_test, name='finish_test'),
+    path('about/', views.about, name='about'),
+    path('contacts/', views.contacts, name='contacts'),
 ]
