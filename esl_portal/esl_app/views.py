@@ -330,3 +330,8 @@ def about(request):
 def contacts(request):
     is_authenticated = request.user.is_authenticated
     return render(request, 'esl_app/contacts.html', {'is_authenticated': is_authenticated})
+
+
+def error_404(request, exception=None):
+    is_authenticated = request.user.is_authenticated
+    return render(request, 'esl_app/404.html', {'is_authenticated': is_authenticated})
