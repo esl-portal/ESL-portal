@@ -24,7 +24,10 @@ def log_in(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request=request, user=user)
-            return redirect('/main/')
+            if request.user.is_superuser:
+                return redirect('/admin')
+            else:
+                return redirect('/main')
         else:
             form = UserLoginForm()
             return render(request, 'esl_app/login.html', {'wrong_credentials': True,
