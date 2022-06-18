@@ -21,4 +21,5 @@ urlpatterns = [
     path('tests/<int:test_id>/ajax/finish/', views.finish_test, name='finish_test'),
     path('about/', views.about, name='about'),
     path('contacts/', views.contacts, name='contacts'),
+    path('', views.root, name='root'),
 ]

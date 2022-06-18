@@ -12,6 +12,10 @@ def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
+def root(request):
+    return redirect('/main')
+
+
 def main(request):
     context = {'is_authenticated': request.user.is_authenticated, 'request': request}
     return render(request, 'esl_app/main.html', context)
