@@ -138,7 +138,10 @@ def test_list(request):
         int_finished = int(finished)
         finished = int_finished
         if int_finished == 1:
-            list_of_tests = Test.objects.filter(completion__user=request.user, completion__is_completed=True)
+            if request.user.is_anonymous:
+                list_of_tests = []
+            else:
+                list_of_tests = Test.objects.filter(completion__user=request.user, completion__is_completed=True)
         else:
             list_of_tests = Test.objects.exclude(completion__is_completed=True)
     return render(request, 'esl_app/tests.html', {'list': list_of_tests, 'is_authenticated': is_authenticated, 'finished_param': finished})
