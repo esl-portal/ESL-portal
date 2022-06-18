@@ -203,9 +203,11 @@ def start_test(request, test_id):
             is_last = False
         else:
             count = first_completion.number_of_last_answered_question + 1
-            question = Test.objects.get(pk=test_id).questions.order_by('id')[count - 1]
-            # first_completion.number_of_last_answered_question += 1
-            # first_completion.save()
+            if len(Test.objects.get(pk=test_id).questions.order_by('id')) <= count - 1:
+                question = Test.objects.get(pk=test_id).questions.order_by('id')[count - 2]
+                count -= 1
+            else:
+                question = Test.objects.get(pk=test_id).questions.order_by('id')[count - 1]
             is_last = True if Test.objects.get(pk=test_id).questions.count() == count else False
     else:
         count = 1
